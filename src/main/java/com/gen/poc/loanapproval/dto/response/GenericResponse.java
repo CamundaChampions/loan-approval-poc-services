@@ -1,4 +1,4 @@
-package com.gen.poc.loanapproval.dto;
+package com.gen.poc.loanapproval.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
