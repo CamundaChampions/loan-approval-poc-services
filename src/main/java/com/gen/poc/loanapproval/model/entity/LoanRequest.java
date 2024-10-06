@@ -1,5 +1,6 @@
 package com.gen.poc.loanapproval.model.entity;
 
+import com.gen.poc.loanapproval.constants.enums.LoanStatus;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,7 +20,7 @@ public class LoanRequest {
     private String reason;
 
     @Column(name = "status", length = 10)
-    private String status;
+    private LoanStatus status;
 
     @Column(name = "COMMENTS", length = 256)
     private String comments;
