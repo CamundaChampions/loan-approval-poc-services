@@ -2,8 +2,11 @@ package com.gen.poc.loanapproval.model.entity;
 
 import com.gen.poc.loanapproval.constants.enums.LoanStatus;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "LOAN_REQUEST")
 public class LoanRequest {
     @Id
