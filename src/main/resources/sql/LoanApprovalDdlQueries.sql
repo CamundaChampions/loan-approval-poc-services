@@ -105,3 +105,14 @@ CREATE TABLE IF NOT EXISTS Risk_Assessment
     PRIMARY KEY (id),
     FOREIGN KEY (loan_request_id) REFERENCES LOAN_REQUEST (id)
 );
+
+CREATE TABLE IF NOT EXISTS Loan_Assessment_task
+(
+    task_id                  VARCHAR(25) NOT NULL,
+    task_instance_id         VARCHAR(50) NOT NULL,
+    role                     VARCHAR(10) NOT NULL,
+    stage                    VARCHAR(10) NOT NULL,
+    loan_request_id          INTEGER     NOT NULL,
+    PRIMARY KEY (task_id),
+    FOREIGN KEY (loan_request_id) REFERENCES LOAN_REQUEST (id)
+    );

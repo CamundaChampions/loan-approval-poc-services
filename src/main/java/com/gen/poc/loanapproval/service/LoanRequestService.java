@@ -2,8 +2,8 @@ package com.gen.poc.loanapproval.service;
 
 import org.springframework.stereotype.Service;
 
-import com.gen.poc.loanapproval.model.Customer;
-import com.gen.poc.loanapproval.model.LoanRequest;
+import com.gen.poc.loanapproval.repository.entity.Customer;
+import com.gen.poc.loanapproval.repository.entity.LoanRequest;
 import com.gen.poc.loanapproval.repository.CustomerRepository;
 import com.gen.poc.loanapproval.repository.LoanRequestRepository;
 

@@ -1,4 +1,4 @@
-package com.gen.poc.loanapproval.model;
+package com.gen.poc.loanapproval.repository.entity;
 
 import java.math.BigDecimal;
 

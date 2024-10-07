@@ -8,8 +8,8 @@ import com.gen.poc.loanapproval.controller.mapper.LoanRequestMapper;
 import com.gen.poc.loanapproval.dto.LoanDetailsDTO;
 import com.gen.poc.loanapproval.dto.LoanRequestDTO;
 import com.gen.poc.loanapproval.handler.ResponseHandler;
-import com.gen.poc.loanapproval.model.Customer;
-import com.gen.poc.loanapproval.model.LoanRequest;
+import com.gen.poc.loanapproval.repository.entity.Customer;
+import com.gen.poc.loanapproval.repository.entity.LoanRequest;
 import com.gen.poc.loanapproval.service.LoanRequestService;
 import com.gen.poc.loanapproval.util.Constants;
 
