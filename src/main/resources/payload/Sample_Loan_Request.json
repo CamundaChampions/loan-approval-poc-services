@@ -1,0 +1,50 @@
+{
+  "amount": 1000000,
+  "term": 5,
+  "reason": "Buy Housing",
+  "customer": {
+    "firstName": "Test",
+    "lastName": "User",
+    "ssn": "1234567890",
+    "dob": "1998-10-05",
+    "maritalStatus": "Single",
+    "email": "sagar10315@gmail.com",
+    "phone": "1263161711",
+    "address": {
+      "street": "Bellandur",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "zipCode": "560029",
+      "country": "IN"
+    },
+    "employment": {
+      "employerName": "XYZ",
+      "jobTitle": "Software Engineer",
+      "annualIncome": 100000,
+      "experience": 3
+    },
+    "depositAccount": {
+      "accountNumber": "1234567890",
+      "bankName": "ABC",
+      "accountType": "SAVINGS"
+    }
+  },
+  "loanDocuments": [
+    {
+      "documentType": "BANK",
+      "fileName": "tax.pdf",
+      "filePath": "C:/User/Bank/"
+    },
+    {
+      "documentType": "EMPLOYMENT",
+      "fileName": "offerLetter.padf",
+      "filePath": "C:/User/Employer/"
+    }
+
+  ],
+  "cashDepositCollateral": {
+    "bankName": "DEY",
+    "accountNumber": "1234567890",
+    "amountBalance": 300000
+  }
+}

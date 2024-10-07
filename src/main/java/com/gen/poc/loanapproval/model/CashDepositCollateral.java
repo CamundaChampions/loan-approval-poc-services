@@ -1,5 +1,7 @@
 package com.gen.poc.loanapproval.model;
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -8,34 +10,29 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@Entity
 @Data
-public class Address {
-
+@Entity
+@Table(name = "Cash_Deposit_Collateral")
+public class CashDepositCollateral {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "street")
-	private String street;
+	@Column(name = "Bank_Name")
+	private String bankName;
 
-	@Column(name = "city")
-	private String city;
+	@Column(name = "Account_Number")
+	private String accountNumber;
 
-	@Column(name = "state")
-	private String state;
-
-	@Column(name = "zipcode")
-	private String zipCode;
-
-	@Column(name = "country")
-	private String country;
+	@Column(name = "Amount_Balance")
+	private BigDecimal amountBalance;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CUSTOMER_ID")
+	@JoinColumn(name = "LOAN_REQUEST_ID")
 	@JsonIgnore
 	@NotNull
 	@ToString.Exclude
 	@EqualsAndHashCode.Exclude
-	private Customer customer;
+	private LoanRequest loanRequest;
+
 }

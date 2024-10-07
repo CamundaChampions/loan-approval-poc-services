@@ -2,16 +2,18 @@ package com.gen.poc.loanapproval.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
-@Access(AccessType.FIELD)
 public class Customer {
+
 	@Id
-	@Column(name = "id")
-	private Integer id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	@Column(name = "first_Name")
 	private String firstName;
@@ -33,4 +35,48 @@ public class Customer {
 
 	@Column(name = "phone")
 	private String phone;
+
+	@OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Address address;
+
+	@OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Employment employment;
+
+	@OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private DepositAccount depositAccount;
+
+	@OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@JsonIgnore
+	private LoanRequest loanRequest;
+
+	public void setAddress(Address address) {
+		if (this.address != null) {
+			this.address.setCustomer(null);
+		}
+		if (address != null) {
+			address.setCustomer(this);
+		}
+		this.address = address;
+	}
+
+	public void setDepositAccount(DepositAccount depositAccount) {
+		if (this.depositAccount != null) {
+			this.depositAccount.setCustomer(null);
+		}
+		if (depositAccount != null) {
+			depositAccount.setCustomer(this);
+		}
+		this.depositAccount = depositAccount;
+	}
+
+	public void setEmployment(Employment employment) {
+		if (this.employment != null) {
+			this.employment.setCustomer(null);
+		}
+		if (employment != null) {
+			employment.setCustomer(this);
+		}
+		this.employment = employment;
+	}
+
 }

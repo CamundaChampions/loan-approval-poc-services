@@ -8,34 +8,30 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@Entity
 @Data
-public class Address {
+@Entity
+@Table(name = "Loan_Documents")
+public class LoanDocuments {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "street")
-	private String street;
+	@Column(name = "Document_Type")
+	private String documentType;
 
-	@Column(name = "city")
-	private String city;
+	@Column(name = "File_Name")
+	private String fileName;
 
-	@Column(name = "state")
-	private String state;
+	@Column(name = "File_Path")
+	private String filePath;
 
-	@Column(name = "zipcode")
-	private String zipCode;
-
-	@Column(name = "country")
-	private String country;
-
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CUSTOMER_ID")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "Loan_Request_ID")
 	@JsonIgnore
 	@NotNull
 	@ToString.Exclude
 	@EqualsAndHashCode.Exclude
-	private Customer customer;
+	private LoanRequest loanRequest;
+
 }

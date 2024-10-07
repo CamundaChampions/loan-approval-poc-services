@@ -1,6 +1,6 @@
 package com.gen.poc.loanapproval.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.math.BigDecimal;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -8,34 +8,32 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@Entity
 @Data
-public class Address {
+@Entity
+@Table(name = "Deposit_Account")
+public class DepositAccount {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "street")
-	private String street;
+	@Column(name = "Account_Number")
+	private String accountNumber;
 
-	@Column(name = "city")
-	private String city;
+	@Column(name = "Bank_Name")
+	private String bankName;
 
-	@Column(name = "state")
-	private String state;
+	@Column(name = "Amount_Credited")
+	private BigDecimal amountCredited;
 
-	@Column(name = "zipcode")
-	private String zipCode;
-
-	@Column(name = "country")
-	private String country;
+	@Column(name = "Account_Type")
+	private String accountType;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CUSTOMER_ID")
-	@JsonIgnore
 	@NotNull
 	@ToString.Exclude
 	@EqualsAndHashCode.Exclude
 	private Customer customer;
+
 }

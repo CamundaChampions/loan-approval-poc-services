@@ -19,15 +19,27 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.h2database:h2:2.2.220'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    //lombok
     implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // Mapstruct
+    implementation 'org.mapstruct:mapstruct:1.5.2.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
+
+    //swagger
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
 }
 
 tasks.named('test') {
