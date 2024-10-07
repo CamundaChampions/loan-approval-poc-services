@@ -22,6 +22,7 @@ public class LoanRequestService {
 		customerRepository.save(customer);
 		loanRequest.setCustomer(customer);
 		loanRequestRepository.save(loanRequest);
+
 	}
 	public LoanRequest getLoanRequest(Long loanRequestId) {
 		return loanRequestRepository.findById(loanRequestId).orElseThrow();
