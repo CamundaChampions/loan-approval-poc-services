@@ -1,4 +1,4 @@
-package com.gen.poc.loanapproval.model;
+package com.gen.poc.loanapproval.repository.entity;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -38,6 +38,9 @@ public class LoanRequest {
 
 	@OneToOne(mappedBy = "loanRequest", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private CashDepositCollateral cashDepositCollateral;
+
+	@OneToOne(mappedBy = "loanRequest", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private LoanAssessmentTask loanAssessmentTask;
 
 	@Column(name = "Workflow_ID")
 	private String workflowId;
@@ -82,6 +85,16 @@ public class LoanRequest {
 			customer.setLoanRequest(this);
 		}
 		this.customer = customer;
+	}
+
+	public void setLoanAssessmentTask(LoanAssessmentTask loanAssessmentTask) {
+		if (this.loanAssessmentTask != null) {
+			this.loanAssessmentTask.setLoanRequest(null);
+		}
+		if (loanAssessmentTask != null) {
+			loanAssessmentTask.setLoanRequest(this);
+		}
+		this.loanAssessmentTask = loanAssessmentTask;
 	}
 
 }

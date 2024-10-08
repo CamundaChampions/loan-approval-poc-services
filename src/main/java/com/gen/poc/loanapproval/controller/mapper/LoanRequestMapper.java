@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.gen.poc.loanapproval.dto.*;
-import com.gen.poc.loanapproval.model.*;
+import com.gen.poc.loanapproval.repository.entity.*;
 
 @Mapper(componentModel = "spring")
 public interface LoanRequestMapper {
@@ -13,6 +13,7 @@ public interface LoanRequestMapper {
 	@Mapping(target = "workflowId", ignore = true)
 	@Mapping(target = "status", ignore = true)
 	@Mapping(target = "customer", ignore = true)
+	@Mapping(target = "loanAssessmentTask", ignore = true)
 	LoanRequest toLoanRequestEntity(LoanRequestDTO dto);
 
 	@Mapping(target = "id", ignore = true)
