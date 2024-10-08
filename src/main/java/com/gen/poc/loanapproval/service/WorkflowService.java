@@ -4,6 +4,7 @@ import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -12,11 +13,8 @@ import java.util.Map;
 @Service
 public class WorkflowService {
 
-    @Autowired
-    @Qualifier("camundaDataSource") // Specify the Camunda data source
-    private DataSource camundaDataSource;
 
-    @Autowired
+    @Autowired(required = false)
     private RuntimeService runtimeService;
 
     // Create a new process instance
