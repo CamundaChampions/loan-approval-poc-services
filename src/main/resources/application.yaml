@@ -27,28 +27,11 @@ spring:
 
 camunda:
   bpm:
-    enabled: true
-    database:
-      type: h2
-      schema-update: drop-create
+    admin-user:
+      id: demo
+      password: demo
+      firstName: Demo
+    filter:
+      create: All tasks
 
 
-      # Job executor configuration
-    job-execution:
-      enabled: true  # Enable job executor (runs async tasks like timers, messages)
-      core-pool-size: 5
-      max-pool-size: 20
-      queue-capacity: 30
-
-    # Deployment settings
-    deployment-resource-pattern: "bpmn/LOAN_APPROVAL_PROCESS_CAMUNDA.bpmn"  # Location of BPMN files
-    auto-deployment-enabled: true  # Auto deployment of BPMN processes
-
-    # Webapp configuration
-    webapp:
-      enabled: true  # Enable Camunda web apps (Cockpit, Tasklist, Admin)
-      index-redirect-enabled: true  # Redirect to the Camunda webapp at root path
-
-    # REST API
-    rest:
-      enabled: true  # Enable the Camunda REST API

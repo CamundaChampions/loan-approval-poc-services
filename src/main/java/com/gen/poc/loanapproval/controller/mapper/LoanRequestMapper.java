@@ -1,10 +1,10 @@
 package com.gen.poc.loanapproval.controller.mapper;
 
-import com.gen.poc.loanapproval.repository.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.gen.poc.loanapproval.dto.*;
+import com.gen.poc.loanapproval.repository.entity.*;
 
 @Mapper(componentModel = "spring")
 public interface LoanRequestMapper {
@@ -13,6 +13,7 @@ public interface LoanRequestMapper {
 	@Mapping(target = "workflowId", ignore = true)
 	@Mapping(target = "status", ignore = true)
 	@Mapping(target = "customer", ignore = true)
+	@Mapping(target = "loanAssessmentTask", ignore = true)
 	LoanRequest toLoanRequestEntity(LoanRequestDTO dto);
 
 	@Mapping(target = "id", ignore = true)
@@ -31,7 +32,7 @@ public interface LoanRequestMapper {
 
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "customer", ignore = true)
-    Address toAddressEntity(AddressDTO addressDTO);
+	Address toAddressEntity(AddressDTO addressDTO);
 
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "customer", ignore = true)

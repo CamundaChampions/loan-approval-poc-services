@@ -17,11 +17,18 @@ repositories {
     mavenCentral()
 }
 
+dependencyManagement {
+    imports {
+        mavenBom 'org.camunda.bpm:camunda-bom:7.21.0'
+    }
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'com.h2database:h2:2.2.220'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    //h2 db
+    runtimeOnly 'com.h2database:h2'
 
     //lombok
     implementation 'org.projectlombok:lombok'
@@ -38,20 +45,11 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 
     //Camunda
-    implementation 'org.camunda.bpm:camunda-engine:7.19.0'
-    implementation 'org.camunda.bpm.webapp:camunda-webapp:7.19.0'
-    implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:7.19.0'
-    implementation 'org.camunda.bpm:camunda-engine-rest:7.19.0'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
-    implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
-
-
+    //Camunda
+    implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-rest'
+    implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
