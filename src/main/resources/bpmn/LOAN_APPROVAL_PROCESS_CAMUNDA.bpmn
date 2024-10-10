@@ -94,7 +94,7 @@
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_0rd1bwl" sourceRef="Event_0b3lsfm" targetRef="Activity_1gqa7l5" />
       <bpmn:sequenceFlow id="Flow_0rwszj3" sourceRef="Activity_1gqa7l5" targetRef="Event_0qeq13x" />
-      <bpmn:serviceTask id="Activity_1gqa7l5" name="Process Application Cancellation" camunda:delegateExpression="${DummyDelegate}">
+      <bpmn:serviceTask id="Activity_1gqa7l5" name="Process Application Cancellation" camunda:delegateExpression="${cancelApplicationServiceTask}">
         <bpmn:extensionElements />
         <bpmn:incoming>Flow_0rd1bwl</bpmn:incoming>
         <bpmn:outgoing>Flow_0rwszj3</bpmn:outgoing>
@@ -104,13 +104,13 @@
         <bpmn:messageEventDefinition id="MessageEventDefinition_0u0zte3" messageRef="Message_06aga38" />
       </bpmn:startEvent>
     </bpmn:subProcess>
-    <bpmn:serviceTask id="Activity_CheckFormCompletness" name="Check for form completeness and format" camunda:delegateExpression="${DummyDelegate}">
+    <bpmn:serviceTask id="Activity_CheckFormCompletness" name="Check for form completeness and format" camunda:delegateExpression="${creditCheckServiceTask}">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_msgStartEvent_to_checkFormCompletness</bpmn:incoming>
       <bpmn:incoming>Flow_0oyeqjo</bpmn:incoming>
       <bpmn:outgoing>Flow_1kstsml</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1i8mani" name="Disbursement Instruction" camunda:delegateExpression="${DummyDelegate}">
+    <bpmn:serviceTask id="Activity_1i8mani" name="Disbursement Instruction" camunda:delegateExpression="${disbursementInstructionServiceTask}">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1r6cn4k</bpmn:incoming>
       <bpmn:outgoing>Flow_0e7waix</bpmn:outgoing>
@@ -127,7 +127,10 @@
     </bpmn:intermediateCatchEvent>
     <bpmn:userTask id="Activity_financialAssessment" name="Financial Assessment" camunda:assignee="FA">
       <bpmn:extensionElements>
-        <camunda:taskListener delegateExpression="${DummyListener}" event="create" id="1" />
+        <camunda:taskListener delegateExpression="${createUserTask}" event="create" id="1" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">"financialAssessment"</camunda:inputParameter>
+        </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1saa5ze</bpmn:incoming>
       <bpmn:incoming>Flow_14o1vde</bpmn:incoming>
@@ -166,9 +169,12 @@
     <bpmn:sequenceFlow id="Flow_07yc8ef" name="Low Risk" sourceRef="Gateway_0y4xwrr" targetRef="Activity_1bj9jpi">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=highRisk = false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="Activity_0ym4juq" name="Manager Approval" camunda:assignee="MA">
+    <bpmn:userTask id="Activity_0ym4juq" name="Manager Approval" camunda:assignee="RA">
       <bpmn:extensionElements>
-        <camunda:taskListener delegateExpression="DummyListener" event="create" id="2" />
+        <camunda:taskListener delegateExpression="${createUserTask}" event="create" id="2" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">"riskAssessment"</camunda:inputParameter>
+        </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_05bt797</bpmn:incoming>
       <bpmn:outgoing>Flow_163p03s</bpmn:outgoing>
@@ -185,12 +191,12 @@
     <bpmn:sequenceFlow id="Flow_1tdztvm" name="No" sourceRef="Gateway_1213rk1" targetRef="Activity_09addmn">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=hasMissingData = false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sendTask id="Activity_requestForMissingApplicationData" name="Notify Applicant to provide missing data" camunda:delegateExpression="${DummyDelegate}">
+    <bpmn:sendTask id="Activity_requestForMissingApplicationData" name="Notify Applicant to provide missing data" camunda:delegateExpression="${notifyToApplicantServiceTask}">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_0jbfdef</bpmn:incoming>
       <bpmn:outgoing>Flow_0394oaf</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sendTask id="Activity_1dunbtg" name="Notify Applicant to provide missing documents" camunda:delegateExpression="${DummyDelegate}">
+    <bpmn:sendTask id="Activity_1dunbtg" name="Notify Applicant to provide missing documents" camunda:delegateExpression="${notifyToApplicantServiceTask}">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_0a9f9es</bpmn:incoming>
       <bpmn:outgoing>Flow_1lb00v7</bpmn:outgoing>
@@ -200,13 +206,17 @@
       <bpmn:outgoing>Flow_05bt797</bpmn:outgoing>
       <bpmn:outgoing>Flow_07yc8ef</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_09addmn" name="Risk Scoring" camunda:delegateExpression="${DummyDelegate}">
+    <bpmn:serviceTask id="Activity_09addmn" name="Risk Scoring" camunda:delegateExpression="${riskScoringServiceTask}">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1tdztvm</bpmn:incoming>
       <bpmn:outgoing>Flow_17afgne</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sendTask id="Activity_1bj9jpi" name="Trigger Document Signing" camunda:delegateExpression="${DummyDelegate}">
-      <bpmn:extensionElements />
+    <bpmn:sendTask id="Activity_1bj9jpi" name="Trigger Document Signing" camunda:delegateExpression="${notifyToApplicantServiceTask}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">"docSigning"</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_07yc8ef</bpmn:incoming>
       <bpmn:incoming>Flow_1ba2kzx</bpmn:incoming>
       <bpmn:outgoing>Flow_12glcin</bpmn:outgoing>
@@ -238,7 +248,7 @@
     <bpmn:sequenceFlow id="Flow_0a9f9es" name="Yes" sourceRef="Gateway_1213rk1" targetRef="Activity_1dunbtg">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=hasMissingData = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_creditCheck" name="Credit Check" camunda:delegateExpression="${DummyDelegate}">
+    <bpmn:serviceTask id="Activity_creditCheck" name="Credit Check" camunda:delegateExpression="${creditCheckServiceTask}">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1xyi20u</bpmn:incoming>
       <bpmn:outgoing>Flow_1saa5ze</bpmn:outgoing>
