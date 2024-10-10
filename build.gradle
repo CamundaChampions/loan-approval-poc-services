@@ -49,6 +49,9 @@ dependencies {
     implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-rest'
     implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp'
 
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
