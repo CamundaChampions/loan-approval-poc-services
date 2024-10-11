@@ -42,7 +42,6 @@ dependencies {
 
     //swagger
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 
     //Camunda
     //Camunda
@@ -51,6 +50,11 @@ dependencies {
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
+
+    // Use SpringDoc OpenAPI for WebFlux
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation(platform("io.grpc:grpc-bom:1.68.0"))
+
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
