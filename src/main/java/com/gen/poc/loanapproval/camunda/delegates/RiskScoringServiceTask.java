@@ -18,6 +18,7 @@ public class RiskScoringServiceTask implements BaseDelegate {
 
         Integer creditScore = (Integer) delegateExecution.getVariable("creditScore");
         log.info("test riskScoringServiceTask worker");
-        delegateExecution.setVariable("highRisk",creditScore < 800);
+        boolean highRisk = creditScore < 800;
+        delegateExecution.setVariable("highRisk", highRisk);
     }
 }

@@ -81,7 +81,7 @@
       <bpmn:incoming>Flow_00xb9cs</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1ba2kzx" name="Approved" sourceRef="Gateway_1u8e1dx" targetRef="Activity_1bj9jpi">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=decision = "APROVED"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "APROVED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_1u8e1dx" name="Approved/ Rejected">
       <bpmn:incoming>Flow_163p03s</bpmn:incoming>
@@ -137,7 +137,7 @@
       <bpmn:outgoing>Flow_0khv2g5</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_00xb9cs" name="Rejected" sourceRef="Gateway_1u8e1dx" targetRef="Event_0fsfors">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=decision = "REJECTED"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "REJECTED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_02v8mio" sourceRef="Gateway_12i57tf" targetRef="Event_0hcm4nh" />
     <bpmn:sequenceFlow id="Flow_0394oaf" sourceRef="Activity_requestForMissingApplicationData" targetRef="Gateway_12i57tf" />
@@ -161,13 +161,13 @@
     <bpmn:sequenceFlow id="Flow_1saa5ze" sourceRef="Activity_creditCheck" targetRef="Activity_financialAssessment" />
     <bpmn:sequenceFlow id="Flow_1wfzgt5" sourceRef="Gateway_02wk65b" targetRef="Event_1glqrtj" />
     <bpmn:sequenceFlow id="Flow_05bt797" name="High/Medium Risk" sourceRef="Gateway_0y4xwrr" targetRef="Activity_0ym4juq">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=highRisk</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${highRisk}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:startEvent id="START_EVENT_LOAN_REQUEST_RECEIVED" name="Loan Request Received">
       <bpmn:outgoing>Flow_msgStartEvent_to_checkFormCompletness</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_07yc8ef" name="Low Risk" sourceRef="Gateway_0y4xwrr" targetRef="Activity_1bj9jpi">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=highRisk = false</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!highRisk}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:userTask id="Activity_0ym4juq" name="Manager Approval" camunda:assignee="RA">
       <bpmn:extensionElements>
@@ -186,10 +186,10 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_msgStartEvent_to_checkFormCompletness" name="Msg Start Event to Check form completness" sourceRef="START_EVENT_LOAN_REQUEST_RECEIVED" targetRef="Activity_CheckFormCompletness" />
     <bpmn:sequenceFlow id="Flow_0jbfdef" name="No" sourceRef="Gateway_1q2ugcz" targetRef="Activity_requestForMissingApplicationData">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isApplicationComplete = false</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!isApplicationComplete}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1tdztvm" name="No" sourceRef="Gateway_1213rk1" targetRef="Activity_09addmn">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=hasMissingData = false</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!hasMissingData}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sendTask id="Activity_requestForMissingApplicationData" name="Notify Applicant to provide missing data" camunda:delegateExpression="${notifyToApplicantServiceTask}">
       <bpmn:extensionElements />
@@ -243,10 +243,10 @@
       <bpmn:outgoing>Flow_1wfzgt5</bpmn:outgoing>
     </bpmn:eventBasedGateway>
     <bpmn:sequenceFlow id="Flow_1xyi20u" name="Yes" sourceRef="Gateway_1q2ugcz" targetRef="Activity_creditCheck">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isApplicationComplete</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isApplicationComplete}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0a9f9es" name="Yes" sourceRef="Gateway_1213rk1" targetRef="Activity_1dunbtg">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=hasMissingData = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasMissingData}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_creditCheck" name="Credit Check" camunda:delegateExpression="${creditCheckServiceTask}">
       <bpmn:extensionElements />
@@ -569,7 +569,7 @@
         <di:waypoint x="1344" y="390" />
         <di:waypoint x="1414" y="390" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1349" y="458" width="90" height="14" />
+          <dc:Bounds x="1361" y="458" width="66" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_07yc8ef_di" bpmnElement="Flow_07yc8ef" bioc:stroke="#205022">

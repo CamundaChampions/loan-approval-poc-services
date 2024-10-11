@@ -26,7 +26,7 @@ public class CreateUserTask implements BaseListener {
     @Override
     public void notify(DelegateTask delegateTask) {
 
-        Long loanApplicationId = Long.valueOf((Integer) delegateTask.getVariable("loan-id"));
+        Long loanApplicationId = (Long) delegateTask.getVariable("loan-id");
         String taskType = delegateTask.getVariable("taskType").toString();
         LoanApplicationStatus status;
         String taskId;

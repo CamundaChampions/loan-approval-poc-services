@@ -48,6 +48,7 @@ public class LoanSubmitService {
         Map<String, Object> params = new HashMap<>();
         params.put("isApplicationComplete", true);
         params.put("loan-id", loanApplication.getLoanApplicationId());
+        params.put("hasMissingData", false);
 
         ProcessInstance processInstance = workflowService.createProcessInstance("LOAN_APPROVAL_PROCESS", params);
 
