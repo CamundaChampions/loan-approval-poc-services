@@ -1,13 +1,12 @@
-package com.gen.poc.loanapproval.services.mapper;
+package com.gen.poc.loanapproval.service.mapper;
 
 import com.gen.poc.loanapproval.dto.LoanRequestDTO;
-import com.gen.poc.loanapproval.repository.entity.*;
-
+import com.gen.poc.loanapproval.repository.entity.LoanApplication;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface LoanRequestMapper {
+public interface LoanRequestMapperUpdated {
 	@Mapping(target = "loanApplicationId", ignore = true)
 	@Mapping(target = "comments", ignore = true)
 	@Mapping(target = "processInstanceId", ignore = true)

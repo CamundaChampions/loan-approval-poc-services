@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0pmx8jg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.27.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:color="http://bpmn.io/schema/bpmn/color/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0pmx8jg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.27.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
   <bpmn:collaboration id="LOAN_APPROVAL_PROCESS_COLL">
     <bpmn:participant id="Participant_Loan_processing" name="Loan Prcessing" processRef="LOAN_APPROVAL_PROCESS" />
     <bpmn:participant id="Participant_1dte9e0" name="Applicant" />
@@ -10,7 +10,7 @@
     <bpmn:messageFlow id="Flow_1xew3dp" sourceRef="Participant_0qz8m1p" targetRef="Activity_0ym4juq" />
     <bpmn:messageFlow id="Flow_0y9jbfl" sourceRef="Participant_1dte9e0" targetRef="Event_1hnqcys" />
   </bpmn:collaboration>
-  <bpmn:process id="LOAN_APPROVAL_PROCESS" name="LOAN APPROVAL PROCESS" isExecutable="true">
+  <bpmn:process id="LOAN_APPROVAL_PROCESS" name="LOAN APPROVAL PROCESS" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:laneSet id="LaneSet_0a4k250">
       <bpmn:lane id="Loan_processing" name="Loan Processing steps">
         <bpmn:flowNodeRef>Activity_1bj9jpi</bpmn:flowNodeRef>
@@ -81,7 +81,7 @@
       <bpmn:incoming>Flow_00xb9cs</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1ba2kzx" name="Approved" sourceRef="Gateway_1u8e1dx" targetRef="Activity_1bj9jpi">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=decision = "APROVED"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "APROVED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_1u8e1dx" name="Approved/ Rejected">
       <bpmn:incoming>Flow_163p03s</bpmn:incoming>
@@ -94,10 +94,8 @@
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_0rd1bwl" sourceRef="Event_0b3lsfm" targetRef="Activity_1gqa7l5" />
       <bpmn:sequenceFlow id="Flow_0rwszj3" sourceRef="Activity_1gqa7l5" targetRef="Event_0qeq13x" />
-      <bpmn:serviceTask id="Activity_1gqa7l5" name="Process Application Cancellation">
-        <bpmn:extensionElements>
-          <camunda:taskDefinition type="cancelApplicationServiceTask" />
-        </bpmn:extensionElements>
+      <bpmn:serviceTask id="Activity_1gqa7l5" name="Process Application Cancellation" camunda:delegateExpression="${cancelApplicationServiceTask}">
+        <bpmn:extensionElements />
         <bpmn:incoming>Flow_0rd1bwl</bpmn:incoming>
         <bpmn:outgoing>Flow_0rwszj3</bpmn:outgoing>
       </bpmn:serviceTask>
@@ -106,18 +104,14 @@
         <bpmn:messageEventDefinition id="MessageEventDefinition_0u0zte3" messageRef="Message_06aga38" />
       </bpmn:startEvent>
     </bpmn:subProcess>
-    <bpmn:serviceTask id="Activity_CheckFormCompletness" name="Check for form completeness and format">
-      <bpmn:extensionElements>
-        <camunda:taskDefinition type="checkForFormCompletenessServiceTask" />
-      </bpmn:extensionElements>
+    <bpmn:serviceTask id="Activity_CheckFormCompletness" name="Check for form completeness and format" camunda:delegateExpression="${creditCheckServiceTask}">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_msgStartEvent_to_checkFormCompletness</bpmn:incoming>
       <bpmn:incoming>Flow_0oyeqjo</bpmn:incoming>
       <bpmn:outgoing>Flow_1kstsml</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1i8mani" name="Disbursement Instruction">
-      <bpmn:extensionElements>
-        <camunda:taskDefinition type="disbursementInstructionServiceTask" />
-      </bpmn:extensionElements>
+    <bpmn:serviceTask id="Activity_1i8mani" name="Disbursement Instruction" camunda:delegateExpression="${disbursementInstructionServiceTask}">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1r6cn4k</bpmn:incoming>
       <bpmn:outgoing>Flow_0e7waix</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -131,13 +125,19 @@
       <bpmn:outgoing>Flow_1r6cn4k</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1q9xqq1" messageRef="Message_1m1gqhi" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:userTask id="Activity_financialAssessment" name="Financial Assessment">
+    <bpmn:userTask id="Activity_financialAssessment" name="Financial Assessment" camunda:assignee="FA">
+      <bpmn:extensionElements>
+        <camunda:taskListener delegateExpression="${createUserTask}" event="create" id="1" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">"financialAssessment"</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1saa5ze</bpmn:incoming>
       <bpmn:incoming>Flow_14o1vde</bpmn:incoming>
       <bpmn:outgoing>Flow_0khv2g5</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_00xb9cs" name="Rejected" sourceRef="Gateway_1u8e1dx" targetRef="Event_0fsfors">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=decision = "REJECTED"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "REJECTED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_02v8mio" sourceRef="Gateway_12i57tf" targetRef="Event_0hcm4nh" />
     <bpmn:sequenceFlow id="Flow_0394oaf" sourceRef="Activity_requestForMissingApplicationData" targetRef="Gateway_12i57tf" />
@@ -161,19 +161,20 @@
     <bpmn:sequenceFlow id="Flow_1saa5ze" sourceRef="Activity_creditCheck" targetRef="Activity_financialAssessment" />
     <bpmn:sequenceFlow id="Flow_1wfzgt5" sourceRef="Gateway_02wk65b" targetRef="Event_1glqrtj" />
     <bpmn:sequenceFlow id="Flow_05bt797" name="High/Medium Risk" sourceRef="Gateway_0y4xwrr" targetRef="Activity_0ym4juq">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=highRisk</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${highRisk}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:startEvent id="START_EVENT_LOAN_REQUEST_RECEIVED" name="Loan Request Received">
       <bpmn:outgoing>Flow_msgStartEvent_to_checkFormCompletness</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_07yc8ef" name="Low Risk" sourceRef="Gateway_0y4xwrr" targetRef="Activity_1bj9jpi">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=highRisk = false</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!highRisk}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="Activity_0ym4juq" name="Manager Approval">
+    <bpmn:userTask id="Activity_0ym4juq" name="Manager Approval" camunda:assignee="RA">
       <bpmn:extensionElements>
-        <camunda:ioMapping>
-          <camunda:input source="=&#34;managerApproval&#34;" target="taskType" />
-        </camunda:ioMapping>
+        <camunda:taskListener delegateExpression="${createUserTask}" event="create" id="2" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">"riskAssessment"</camunda:inputParameter>
+        </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_05bt797</bpmn:incoming>
       <bpmn:outgoing>Flow_163p03s</bpmn:outgoing>
@@ -185,22 +186,18 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_msgStartEvent_to_checkFormCompletness" name="Msg Start Event to Check form completness" sourceRef="START_EVENT_LOAN_REQUEST_RECEIVED" targetRef="Activity_CheckFormCompletness" />
     <bpmn:sequenceFlow id="Flow_0jbfdef" name="No" sourceRef="Gateway_1q2ugcz" targetRef="Activity_requestForMissingApplicationData">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isApplicationComplete = false</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!isApplicationComplete}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1tdztvm" name="No" sourceRef="Gateway_1213rk1" targetRef="Activity_09addmn">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=hasMissingData = false</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!hasMissingData}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sendTask id="Activity_requestForMissingApplicationData" name="Notify Applicant to provide missing data">
-      <bpmn:extensionElements>
-        <camunda:taskDefinition type="notifyToApplicantServiceTask" />
-      </bpmn:extensionElements>
+    <bpmn:sendTask id="Activity_requestForMissingApplicationData" name="Notify Applicant to provide missing data" camunda:delegateExpression="${notifyToApplicantServiceTask}">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_0jbfdef</bpmn:incoming>
       <bpmn:outgoing>Flow_0394oaf</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sendTask id="Activity_1dunbtg" name="Notify Applicant to provide missing documents">
-      <bpmn:extensionElements>
-        <camunda:taskDefinition type="notifyToApplicantServiceTask" />
-      </bpmn:extensionElements>
+    <bpmn:sendTask id="Activity_1dunbtg" name="Notify Applicant to provide missing documents" camunda:delegateExpression="${notifyToApplicantServiceTask}">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_0a9f9es</bpmn:incoming>
       <bpmn:outgoing>Flow_1lb00v7</bpmn:outgoing>
     </bpmn:sendTask>
@@ -209,19 +206,16 @@
       <bpmn:outgoing>Flow_05bt797</bpmn:outgoing>
       <bpmn:outgoing>Flow_07yc8ef</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_09addmn" name="Risk Scoring">
-      <bpmn:extensionElements>
-        <camunda:taskDefinition type="riskScoringServiceTask" />
-      </bpmn:extensionElements>
+    <bpmn:serviceTask id="Activity_09addmn" name="Risk Scoring" camunda:delegateExpression="${riskScoringServiceTask}">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1tdztvm</bpmn:incoming>
       <bpmn:outgoing>Flow_17afgne</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sendTask id="Activity_1bj9jpi" name="Trigger Document Signing">
+    <bpmn:sendTask id="Activity_1bj9jpi" name="Trigger Document Signing" camunda:delegateExpression="${notifyToApplicantServiceTask}">
       <bpmn:extensionElements>
-        <camunda:taskDefinition type="notifyToApplicantServiceTask" />
-        <camunda:ioMapping>
-          <camunda:input source="=&#34;docSigning&#34;" target="taskType" />
-        </camunda:ioMapping>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">"docSigning"</camunda:inputParameter>
+        </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_07yc8ef</bpmn:incoming>
       <bpmn:incoming>Flow_1ba2kzx</bpmn:incoming>
@@ -249,15 +243,13 @@
       <bpmn:outgoing>Flow_1wfzgt5</bpmn:outgoing>
     </bpmn:eventBasedGateway>
     <bpmn:sequenceFlow id="Flow_1xyi20u" name="Yes" sourceRef="Gateway_1q2ugcz" targetRef="Activity_creditCheck">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isApplicationComplete</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isApplicationComplete}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0a9f9es" name="Yes" sourceRef="Gateway_1213rk1" targetRef="Activity_1dunbtg">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=hasMissingData = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasMissingData}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_creditCheck" name="Credit Check">
-      <bpmn:extensionElements>
-        <camunda:taskDefinition type="creditCheckServiceTask" />
-      </bpmn:extensionElements>
+    <bpmn:serviceTask id="Activity_creditCheck" name="Credit Check" camunda:delegateExpression="${creditCheckServiceTask}">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1xyi20u</bpmn:incoming>
       <bpmn:outgoing>Flow_1saa5ze</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -270,24 +262,16 @@
     </bpmn:intermediateCatchEvent>
   </bpmn:process>
   <bpmn:message id="Message_2l417h0" name="MSGEVNT_MISSING_APP_DATA_RECIEVED_AKNWLG">
-    <bpmn:extensionElements>
-      <camunda:subscription correlationKey="=MSGEVNT_MISSING_APP_DATA_RECIEVED_AKNWLG" />
-    </bpmn:extensionElements>
+    <bpmn:extensionElements />
   </bpmn:message>
   <bpmn:message id="Message_0m37m6l" name="MSGEVNT_AKNOWLEDGE_MISSING_DOC_PROVIDED">
-    <bpmn:extensionElements>
-      <camunda:subscription correlationKey="=MSGEVNT_AKNOWLEDGE_MISSING_DOC_PROVIDED" />
-    </bpmn:extensionElements>
+    <bpmn:extensionElements />
   </bpmn:message>
   <bpmn:message id="Message_1m1gqhi" name="MSGEVNT_SIGNED_DOC_RECIEVED">
-    <bpmn:extensionElements>
-      <camunda:subscription correlationKey="=&#34;MSGEVNT_SIGNED_DOC_RECIEVED&#34;" />
-    </bpmn:extensionElements>
+    <bpmn:extensionElements />
   </bpmn:message>
   <bpmn:message id="Message_06aga38" name="EVNTSTARTMSGEVENT_CANCELLATION">
-    <bpmn:extensionElements>
-      <camunda:subscription correlationKey="=&#34;EVNTSTARTMSGEVENT_CANCELLATION&#34;" />
-    </bpmn:extensionElements>
+    <bpmn:extensionElements />
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="LOAN_APPROVAL_PROCESS_COLL">
@@ -357,12 +341,6 @@
           <dc:Bounds x="1558" y="328" width="51" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1glqrtj_di" bpmnElement="Event_1glqrtj">
-        <dc:Bounds x="1026" y="862" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1012" y="905" width="65" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_12pkyh1_di" bpmnElement="Activity_18tnpxp" isExpanded="true">
         <dc:Bounds x="480" y="990" width="350" height="200" />
         <bpmndi:BPMNLabel />
@@ -410,7 +388,7 @@
           <dc:Bounds x="1979" y="567" width="90" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1keaq0q_di" bpmnElement="Activity_financialAssessment" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
+      <bpmndi:BPMNShape id="Activity_1keaq0q_di" bpmnElement="Activity_financialAssessment" bioc:stroke="#0d4372" bioc:fill="#bbdefb">
         <dc:Bounds x="844" y="507" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -420,7 +398,7 @@
           <dc:Bounds x="200" y="572" width="70" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ky8h0z_di" bpmnElement="Activity_0ym4juq" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
+      <bpmndi:BPMNShape id="Activity_0ky8h0z_di" bpmnElement="Activity_0ym4juq" bioc:stroke="#0d4372" bioc:fill="#bbdefb">
         <dc:Bounds x="1414" y="350" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -479,7 +457,13 @@
       <bpmndi:BPMNShape id="Activity_0aelsra_di" bpmnElement="Activity_creditCheck">
         <dc:Bounds x="675" y="507" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1ba2kzx_di" bpmnElement="Flow_1ba2kzx" bioc:stroke="#205022" color:border-color="#205022">
+      <bpmndi:BPMNShape id="Event_1glqrtj_di" bpmnElement="Event_1glqrtj">
+        <dc:Bounds x="1026" y="862" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1012" y="905" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1ba2kzx_di" bpmnElement="Flow_1ba2kzx" bioc:stroke="#205022">
         <di:waypoint x="1584" y="415" />
         <di:waypoint x="1584" y="470" />
         <di:waypoint x="1764" y="470" />
@@ -488,7 +472,7 @@
           <dc:Bounds x="1590" y="437" width="47" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_00xb9cs_di" bpmnElement="Flow_00xb9cs" bioc:stroke="#831311" color:border-color="#831311">
+      <bpmndi:BPMNEdge id="Flow_00xb9cs_di" bpmnElement="Flow_00xb9cs" bioc:stroke="#831311">
         <di:waypoint x="1609" y="390" />
         <di:waypoint x="1706" y="390" />
         <bpmndi:BPMNLabel>
@@ -580,15 +564,15 @@
         <di:waypoint x="1044" y="815" />
         <di:waypoint x="1044" y="862" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05bt797_di" bpmnElement="Flow_05bt797" bioc:stroke="#6b3c00" color:border-color="#6b3c00">
+      <bpmndi:BPMNEdge id="Flow_05bt797_di" bpmnElement="Flow_05bt797" bioc:stroke="#6b3c00">
         <di:waypoint x="1344" y="522" />
         <di:waypoint x="1344" y="390" />
         <di:waypoint x="1414" y="390" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1349" y="458" width="90" height="14" />
+          <dc:Bounds x="1361" y="458" width="66" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_07yc8ef_di" bpmnElement="Flow_07yc8ef" bioc:stroke="#205022" color:border-color="#205022">
+      <bpmndi:BPMNEdge id="Flow_07yc8ef_di" bpmnElement="Flow_07yc8ef" bioc:stroke="#205022">
         <di:waypoint x="1369" y="547" />
         <di:waypoint x="1754" y="547" />
         <bpmndi:BPMNLabel>
@@ -602,28 +586,28 @@
           <dc:Bounds x="258" y="529" width="80" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0jbfdef_di" bpmnElement="Flow_0jbfdef" bioc:stroke="#831311" color:border-color="#831311">
+      <bpmndi:BPMNEdge id="Flow_0jbfdef_di" bpmnElement="Flow_0jbfdef" bioc:stroke="#831311">
         <di:waypoint x="564" y="572" />
         <di:waypoint x="564" y="630" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="572" y="598" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1tdztvm_di" bpmnElement="Flow_1tdztvm" bioc:stroke="#205022" color:border-color="#205022">
+      <bpmndi:BPMNEdge id="Flow_1tdztvm_di" bpmnElement="Flow_1tdztvm" bioc:stroke="#205022">
         <di:waypoint x="1069" y="547" />
         <di:waypoint x="1144" y="547" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1099" y="529" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xyi20u_di" bpmnElement="Flow_1xyi20u" bioc:stroke="#205022" color:border-color="#205022">
+      <bpmndi:BPMNEdge id="Flow_1xyi20u_di" bpmnElement="Flow_1xyi20u" bioc:stroke="#205022">
         <di:waypoint x="589" y="547" />
         <di:waypoint x="675" y="547" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="624" y="529" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0a9f9es_di" bpmnElement="Flow_0a9f9es" bioc:stroke="#831311" color:border-color="#831311">
+      <bpmndi:BPMNEdge id="Flow_0a9f9es_di" bpmnElement="Flow_0a9f9es" bioc:stroke="#831311">
         <di:waypoint x="1044" y="572" />
         <di:waypoint x="1044" y="650" />
         <bpmndi:BPMNLabel>
@@ -642,19 +626,19 @@
         <dc:Bounds x="1260" y="80" width="400" height="60" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_08d1f1x_di" bpmnElement="Flow_08d1f1x" bioc:stroke="#0d4372" color:border-color="#0d4372">
+      <bpmndi:BPMNEdge id="Flow_08d1f1x_di" bpmnElement="Flow_08d1f1x" bioc:stroke="#0d4372">
         <di:waypoint x="234" y="140" />
         <di:waypoint x="234" y="529" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_03c8vxm_di" bpmnElement="Flow_03c8vxm" bioc:stroke="#0d4372" color:border-color="#0d4372">
+      <bpmndi:BPMNEdge id="Flow_03c8vxm_di" bpmnElement="Flow_03c8vxm" bioc:stroke="#0d4372">
         <di:waypoint x="904" y="140" />
         <di:waypoint x="904" y="507" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xew3dp_di" bpmnElement="Flow_1xew3dp" bioc:stroke="#0d4372" color:border-color="#0d4372">
+      <bpmndi:BPMNEdge id="Flow_1xew3dp_di" bpmnElement="Flow_1xew3dp" bioc:stroke="#0d4372">
         <di:waypoint x="1464" y="140" />
         <di:waypoint x="1464" y="350" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0y9jbfl_di" bpmnElement="Flow_0y9jbfl" bioc:stroke="#0d4372" color:border-color="#0d4372">
+      <bpmndi:BPMNEdge id="Flow_0y9jbfl_di" bpmnElement="Flow_0y9jbfl" bioc:stroke="#0d4372">
         <di:waypoint x="400" y="140" />
         <di:waypoint x="400" y="290" />
         <di:waypoint x="2024" y="290" />
