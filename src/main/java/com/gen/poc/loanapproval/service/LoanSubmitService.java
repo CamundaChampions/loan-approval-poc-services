@@ -61,7 +61,7 @@ public class LoanSubmitService {
         // params.put("hasMissingData", false);
         params.put(EVNTSTARTMSGEVENT_CANCELLATION, EVNTSTARTMSGEVENT_CANCELLATION.concat("-").concat(String.valueOf(loanApplication.getLoanApplicationId())));
 
-        ProcessInstance processInstance = workflowService.createProcessInstance("LOAN_APPROVAL_PROCESS", params);
+        ProcessInstance processInstance = workflowService.createProcessInstance("LOAN_APPROVAL_PROCESS", loanApplication.getLoanApplicationId(), params);
 
         loanApplication.setProcessInstanceId(String.valueOf(processInstance.getProcessInstanceId()));
         loanApplicationRepository.save(loanApplication);
@@ -101,14 +101,16 @@ public class LoanSubmitService {
 
     public void acknowledgeDocumentSigning(String loanId, Map<String, Object> additionalParam) {
         LoanApplication loanApplication = findLoanApplicationById(Long.valueOf(loanId));
-        runtimeService.createMessageCorrelation(AppConstants.MSGEVNT_SIGNED_DOC_RECEIVED)// Message name
-                .processInstanceBusinessKey(String.format(AppConstants.DOC_SIGN_CORRELATION_KEY, loanApplication.getProcessInstanceId())) // Correlation key
+        //runtimeService.correlateMessage(String.format(AppConstants.DOC_SIGN_CORRELATION_KEY, loanApplication.getProcessInstanceId()), loanId, additionalParam);
+        runtimeService.createMessageCorrelation("MSGEVNT_SIGNED_DOC_RECIEVED")// Message name
+                .processInstanceBusinessKey(loanId) // Correlation key
                 .setVariables(additionalParam) // Variables to pass
                 .correlate();
     }
 
     public void acknowledgeDocumentReAssessment(String loanId, Map<String, Object> additionalParam) {
         LoanApplication loanApplication = findLoanApplicationById(Long.valueOf(loanId));
+
         runtimeService.createMessageCorrelation(AppConstants.MSGEVNT_AKNOWLEDGE_MISSING_DOC_PROVIDED)// Message name
                 .processInstanceBusinessKey(String.format(AppConstants.MISSING_DOC_CORRELATION_KEY, loanApplication.getProcessInstanceId())) // Correlation key
                 .setVariables(additionalParam) // Variables to pass

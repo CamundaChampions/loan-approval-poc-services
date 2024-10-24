@@ -25,7 +25,7 @@ public class DisbursementInstructionServiceTask implements BaseDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
         log.info("test disbursementInstructionServiceTask worker");
 
-        Long loanApplicationId = Long.valueOf((Integer) delegateExecution.getVariable("loan-id"));
+        Long loanApplicationId = (Long) delegateExecution.getVariable("loan-id");
         Optional<LoanApplication> loanApplication = loanApplicationRepository.findById(loanApplicationId);
         loanApplication.get().setStatus(LoanApplicationStatus.APPROVE_AND_DISBURSED);
         loanApplicationRepository.save(loanApplication.get());

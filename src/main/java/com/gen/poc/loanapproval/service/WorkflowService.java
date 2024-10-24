@@ -18,8 +18,8 @@ public class WorkflowService {
     private RuntimeService runtimeService;
 
     // Create a new process instance
-    public ProcessInstance createProcessInstance(String processDefinitionKey, Map<String, Object> variables) {
-        return runtimeService.startProcessInstanceByKey(processDefinitionKey, variables);
+    public ProcessInstance createProcessInstance(String processDefinitionKey, Long loanApplicationId,  Map<String, Object> variables) {
+        return runtimeService.startProcessInstanceByKey(processDefinitionKey, loanApplicationId.toString(), variables);
     }
 
     // Get a process instance by ID
