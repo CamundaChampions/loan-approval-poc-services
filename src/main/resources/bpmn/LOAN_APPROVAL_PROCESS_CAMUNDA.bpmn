@@ -54,7 +54,7 @@
       <bpmn:incoming>Flow_07ra654</bpmn:incoming>
       <bpmn:outgoing>Flow_0cwws4o</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0b5ru05">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P10D"</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P10D</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="Event_0j7ajip" name="2 Days expiring">

@@ -111,7 +111,7 @@ public class LoanSubmitService {
         LoanApplication loanApplication = findLoanApplicationById(Long.valueOf(loanId));
 
         runtimeService.createMessageCorrelation(AppConstants.MSGEVNT_AKNOWLEDGE_MISSING_DOC_PROVIDED)// Message name
-                .processInstanceBusinessKey(String.format(AppConstants.MISSING_DOC_CORRELATION_KEY, loanApplication.getProcessInstanceId())) // Correlation key
+                .processInstanceBusinessKey(loanId) // Correlation key
                 .setVariables(additionalParam) // Variables to pass
                 .correlate();
 
@@ -138,7 +138,7 @@ public class LoanSubmitService {
                 && loanApplication.getAmount().longValue() > 0 && loanApplication.getTerm() > 0) {
             additionalParam.put("isApplicationComplete", true);
             runtimeService.createMessageCorrelation(AppConstants.MSGEVNT_MISSING_APP_DATA_RECIEVED_AKNWLG)// Message name
-                    .processInstanceBusinessKey(String.format(AppConstants.APP_UPDATED_CORRELATION_KEY, loanApplication.getProcessInstanceId())) // Correlation key
+                    .processInstanceBusinessKey(loanId) // Correlation key
                     .setVariables(additionalParam) // Variables to pass
                     .correlate();
         } else {
