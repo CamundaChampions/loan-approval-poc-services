@@ -28,7 +28,7 @@ public class NotifyToApplicantServiceTask implements BaseDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
-        Long loanApplicationId = Long.valueOf((Integer) delegateExecution.getVariable("loan-id"));
+        Long loanApplicationId = (Long) delegateExecution.getVariable("loan-id");
         boolean isApplicationComplete = (boolean) delegateExecution.getVariable("isApplicationComplete");
         String taskType = (String) delegateExecution.getVariable("taskType");
         Optional<LoanApplication> loanApplication = loanApplicationRepository.findById(loanApplicationId);
@@ -42,7 +42,7 @@ public class NotifyToApplicantServiceTask implements BaseDelegate {
                 loadApp.setStatus(LoanApplicationStatus.PENDING_DOCUMENT_SIGNING);
                 delegateExecution.setVariable("documentSigningAcknowledgement", String.format(AppConstants.DOC_SIGN_CORRELATION_KEY, delegateExecution.getProcessInstanceId()));
             } else if (LoanApplicationStatus.PENDING_FINANCIAL_ASSESSMENT_MANAGER_APPROVAL.equals(loadApp.getStatus())
-                    && Boolean.parseBoolean((String) delegateExecution.getVariable("hasMissingData"))) {
+                    && (boolean) delegateExecution.getVariable("hasMissingData")) {
                 loadApp.setStatus(LoanApplicationStatus.AWAITING_MISSING_DOCUMENT);
                 delegateExecution.setVariable("missingDocProvidedAcknowledgement", String.format(AppConstants.MISSING_DOC_CORRELATION_KEY, delegateExecution.getProcessInstanceId()));
             }
