@@ -52,12 +52,5 @@ public class NotifyToApplicantServiceTask implements BaseDelegate {
 
     }
 
-    private LoanApplication findLoanApplicationById(Long loanApplicationId) {
-        Optional<LoanApplication> loanApplication = loanApplicationRepository.findById(loanApplicationId);
-        if (loanApplication.isEmpty())
-            throw new LoanNotFoundException(loanApplicationId);
 
-        return loanApplication.get();
-
-    }
 }
