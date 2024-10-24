@@ -28,7 +28,6 @@
         <bpmn:flowNodeRef>Activity_0ym4juq</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0fss3z9</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1v6tzig</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_1hnqcys</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1ps3e0a</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1u8e1dx</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_CheckFormCompletness</bpmn:flowNodeRef>
@@ -45,6 +44,7 @@
         <bpmn:flowNodeRef>Event_0ow4zlz</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_067w7nc</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0i1x65j</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1hnqcys</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_0w5idb3" name="Loan Cancellation task">
         <bpmn:flowNodeRef>Activity_18tnpxp</bpmn:flowNodeRef>
@@ -54,7 +54,7 @@
       <bpmn:incoming>Flow_07ra654</bpmn:incoming>
       <bpmn:outgoing>Flow_0cwws4o</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0b5ru05">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P10D</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P10D"</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="Event_0j7ajip" name="2 Days expiring">
@@ -89,7 +89,7 @@
       <bpmn:serviceTask id="Activity_1gqa7l5" name="Process Application Cancellation" camunda:delegateExpression="${cancelApplicationServiceTask}">
         <bpmn:extensionElements>
           <camunda:inputOutput>
-            <camunda:inputParameter name="cancelType">"Cancelled"</camunda:inputParameter>
+            <camunda:inputParameter name="cancelType">Cancelled</camunda:inputParameter>
           </camunda:inputOutput>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_0rd1bwl</bpmn:incoming>
@@ -115,11 +115,6 @@
       <bpmn:incoming>Flow_1ky04sl</bpmn:incoming>
       <bpmn:outgoing>Flow_14o1vde</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_18mtuuj" messageRef="Message_0m37m6l" />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:intermediateCatchEvent id="Event_1hnqcys" name="Document Signing Received">
-      <bpmn:incoming>Flow_0o10cr9</bpmn:incoming>
-      <bpmn:outgoing>Flow_1r6cn4k</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1q9xqq1" messageRef="Message_1m1gqhi" />
     </bpmn:intermediateCatchEvent>
     <bpmn:userTask id="Activity_financialAssessment" name="Financial Assessment" camunda:assignee="FINANCIAL_ASSESSMENT_MANAGER">
       <bpmn:extensionElements>
@@ -256,7 +251,7 @@
     <bpmn:serviceTask id="Activity_0zd5kqs" name="Auto-close" camunda:delegateExpression="${cancelApplicationServiceTask}">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="cancelType">"Auto Cancelled"</camunda:inputParameter>
+          <camunda:inputParameter name="cancelType">Auto_Cancelled</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_17adyj8</bpmn:incoming>
@@ -267,7 +262,7 @@
     <bpmn:serviceTask id="Activity_0k0kpdx" name="Auto-close" camunda:delegateExpression="${cancelApplicationServiceTask}">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="cancelType">"Auto Cancelled"</camunda:inputParameter>
+          <camunda:inputParameter name="cancelType">Auto_Cancelled</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0hpkc41</bpmn:incoming>
@@ -283,7 +278,7 @@
     <bpmn:serviceTask id="Activity_0dnkkez" name="Reject Application" camunda:delegateExpression="${cancelApplicationServiceTask}">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="cancelType">"Rejected"</camunda:inputParameter>
+          <camunda:inputParameter name="cancelType">Rejected</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ovam42</bpmn:incoming>
@@ -301,13 +296,18 @@
     <bpmn:serviceTask id="Activity_0i1x65j" name="Auto-close" camunda:delegateExpression="${cancelApplicationServiceTask}">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="cancelType">"Auto Cancelled"</camunda:inputParameter>
+          <camunda:inputParameter name="cancelType">Auto_Cancelled</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0cwws4o</bpmn:incoming>
       <bpmn:outgoing>Flow_04jy18y</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_04jy18y" sourceRef="Activity_0i1x65j" targetRef="Event_067w7nc" />
+    <bpmn:intermediateCatchEvent id="Event_1hnqcys" name="Document Signing Received">
+      <bpmn:incoming>Flow_0o10cr9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1r6cn4k</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1q9xqq1" messageRef="Message_1m1gqhi" />
+    </bpmn:intermediateCatchEvent>
   </bpmn:process>
   <bpmn:message id="Message_2l417h0" name="MSGEVNT_MISSING_APP_DATA_RECIEVED_AKNWLG">
     <bpmn:extensionElements />
@@ -365,6 +365,12 @@
           <dc:Bounds x="1558" y="328" width="51" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1mdewew_di" bpmnElement="Event_1hnqcys">
+        <dc:Bounds x="2007" y="529" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1982" y="567" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_12pkyh1_di" bpmnElement="Activity_18tnpxp" isExpanded="true">
         <dc:Bounds x="480" y="990" width="350" height="200" />
         <bpmndi:BPMNLabel />
@@ -404,12 +410,6 @@
         <dc:Bounds x="876" y="772" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="795" y="780" width="77" height="40" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1mdewew_di" bpmnElement="Event_1hnqcys">
-        <dc:Bounds x="2006" y="529" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1979" y="567" width="90" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1keaq0q_di" bpmnElement="Activity_financialAssessment" bioc:stroke="#0d4372" bioc:fill="#bbdefb">
@@ -554,7 +554,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0o10cr9_di" bpmnElement="Flow_0o10cr9">
         <di:waypoint x="1959" y="547" />
-        <di:waypoint x="2006" y="547" />
+        <di:waypoint x="2007" y="547" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0oyeqjo_di" bpmnElement="Flow_0oyeqjo">
         <di:waypoint x="385" y="772" />
@@ -593,7 +593,7 @@
         <di:waypoint x="1044" y="765" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1r6cn4k_di" bpmnElement="Flow_1r6cn4k">
-        <di:waypoint x="2042" y="547" />
+        <di:waypoint x="2043" y="547" />
         <di:waypoint x="2081" y="547" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1saa5ze_di" bpmnElement="Flow_1saa5ze">
@@ -721,8 +721,8 @@
       <bpmndi:BPMNEdge id="Flow_0y9jbfl_di" bpmnElement="Flow_0y9jbfl" bioc:stroke="#0d4372">
         <di:waypoint x="400" y="140" />
         <di:waypoint x="400" y="290" />
-        <di:waypoint x="2024" y="290" />
-        <di:waypoint x="2024" y="529" />
+        <di:waypoint x="2025" y="290" />
+        <di:waypoint x="2025" y="529" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

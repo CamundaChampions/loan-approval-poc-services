@@ -100,7 +100,6 @@ public class LoanSubmitService {
     }
 
     public void acknowledgeDocumentSigning(String loanId, Map<String, Object> additionalParam) {
-        LoanApplication loanApplication = findLoanApplicationById(Long.valueOf(loanId));
         //runtimeService.correlateMessage(String.format(AppConstants.DOC_SIGN_CORRELATION_KEY, loanApplication.getProcessInstanceId()), loanId, additionalParam);
         runtimeService.createMessageCorrelation("MSGEVNT_SIGNED_DOC_RECIEVED")// Message name
                 .processInstanceBusinessKey(loanId) // Correlation key
@@ -214,7 +213,7 @@ public class LoanSubmitService {
             throw new LoanNotFoundException(loanId);
 
         runtimeService.createMessageCorrelation(EVNTSTARTMSGEVENT_CANCELLATION)// Message name
-                .processInstanceBusinessKey(EVNTSTARTMSGEVENT_CANCELLATION.concat("-").concat(String.valueOf(loanId)) )// Correlation key
+                .processInstanceBusinessKey(String.valueOf(loanId))// Correlation key
                 .setVariables(new HashMap<>()) // Variables to pass
                 .correlate();
     }

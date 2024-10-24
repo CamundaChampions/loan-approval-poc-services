@@ -37,8 +37,9 @@ public class CancelApplicationServiceTask implements BaseDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
         String cancelType = getStringValueByKey(delegateExecution, "cancelType");
+        log.info("cancelType: {}", cancelType);
         LoanApplicationStatus loanApplicationStatus = null;
-        if (StringUtils.equals(cancelType, "Auto Cancelled")) {
+        if (StringUtils.equals(cancelType, "Auto_Cancelled")) {
             loanApplicationStatus = LoanApplicationStatus.AUTO_CANCELLED;
         }
         if (StringUtils.equals(cancelType, "Cancelled")) {
