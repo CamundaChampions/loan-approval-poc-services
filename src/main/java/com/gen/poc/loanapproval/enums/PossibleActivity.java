@@ -7,7 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.gen.poc.loanapproval.constants.AppConstants.*;
+import static com.gen.poc.loanapproval.constant.AppConstants.*;
+
 
 @Getter
 @AllArgsConstructor
