@@ -16,6 +16,7 @@ public class LoanApprovalTask {
     private String taskId;
 
     @Column(name = "task_category")
+    @Enumerated(value = EnumType.STRING)
     private ApprovalCategory taskCategory;
 
     @Column(name = "loan_application_id")

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface LoanApprovalTaskRepository extends JpaRepository<LoanApprovalTask, String> {
+    public interface LoanApprovalTaskRepository extends JpaRepository<LoanApprovalTask, String> {
     // Custom query methods can be added here if needed
     @Query(value = """
             select * from Loan_Approval_task
