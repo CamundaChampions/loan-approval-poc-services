@@ -1,6 +1,8 @@
 package com.gen.poc.loanapproval.repository.entity;
 
-import com.gen.poc.loanapproval.constant.enums.TaskStatus;
+
+import com.gen.poc.loanapproval.enums.ApprovalCategory;
+import com.gen.poc.loanapproval.enums.TaskStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,7 +16,7 @@ public class LoanApprovalTask {
     private String taskId;
 
     @Column(name = "task_category")
-    private String taskCategory;
+    private ApprovalCategory taskCategory;
 
     @Column(name = "loan_application_id")
     private Long loanApplicationId;
