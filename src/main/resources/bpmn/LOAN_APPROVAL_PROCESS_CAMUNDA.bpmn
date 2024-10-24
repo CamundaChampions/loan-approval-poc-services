@@ -54,14 +54,14 @@
       <bpmn:incoming>Flow_07ra654</bpmn:incoming>
       <bpmn:outgoing>Flow_0cwws4o</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0b5ru05">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">="P10D"</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P10D</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="Event_0j7ajip" name="2 Days expiring">
       <bpmn:incoming>Flow_1hokvc4</bpmn:incoming>
       <bpmn:outgoing>Flow_17adyj8</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0flhidf">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">="P2D"</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P2D</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:exclusiveGateway id="Gateway_1q2ugcz" name="Application complete?">
@@ -246,7 +246,7 @@
       <bpmn:incoming>Flow_1wfzgt5</bpmn:incoming>
       <bpmn:outgoing>Flow_0hpkc41</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0xnubtc">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">="P30D"</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P30D</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:endEvent id="Event_0xbpp5h" name="Application Auto-Closed">

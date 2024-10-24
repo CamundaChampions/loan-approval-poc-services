@@ -28,7 +28,7 @@ public class NotifyForDocumentSigningDelegate implements BaseDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
         Map<String, Object> returnType = new HashMap<>();
-        Long loanApplicationId = Long.valueOf((Integer) delegateExecution.getVariable("loan-id"));
+        Long loanApplicationId = (Long) delegateExecution.getVariable("loan-id");
         LoanApplication loanApplication = findLoanApplicationById(loanApplicationId);
 
         loanApplication.setStatus(LoanApplicationStatus.PENDING_DOCUMENT_SIGNING);
