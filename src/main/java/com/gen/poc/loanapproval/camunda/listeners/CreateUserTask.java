@@ -9,6 +9,7 @@ import com.gen.poc.loanapproval.repository.entity.LoanApplication;
 import com.gen.poc.loanapproval.repository.entity.LoanApprovalTask;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.springframework.stereotype.Component;
 
@@ -29,16 +30,19 @@ public class CreateUserTask implements BaseListener {
 
         Long loanApplicationId = (Long) delegateTask.getVariable("loan-id");
         String taskType = delegateTask.getVariable("taskType").toString();
+        log.info("TaskType: {}", taskType);
         LoanApplicationStatus status;
         String taskId;
         ApprovalCategory approvalCategory;
-        if("financialAssessment".equalsIgnoreCase(taskType)){
+        if (StringUtils.equalsIgnoreCase("FINANCIAL_ASSESSMENT_MANAGER", taskType)) {
+            log.info("Creating FM task");
             approvalCategory = ApprovalCategory.FINANCIAL_ASSESSMENT_MANAGER;
-            taskId = "FA-".concat(loanApplicationId.toString());
+            taskId = "FM-".concat(loanApplicationId.toString());
             status = LoanApplicationStatus.PENDING_FINANCIAL_ASSESSMENT_MANAGER_APPROVAL;
         } else {
+            log.info("Creating RM task");
             approvalCategory = ApprovalCategory.RISK_ASSESSMENT_MANAGER;
-            taskId = "RA-".concat(loanApplicationId.toString());
+            taskId = "RM-".concat(loanApplicationId.toString());
             status = LoanApplicationStatus.PENDING_RISK_ASSESSMENT_MANAGER_APPROVAL;
         }
         LoanApprovalTask task = new LoanApprovalTask();
@@ -50,7 +54,9 @@ public class CreateUserTask implements BaseListener {
         loanApprovalTaskRepository.save(task);
         Optional<LoanApplication> loanApplication = loanApplicationRepository.findById(loanApplicationId);
         loanApplication.get().setStatus(status);
+        log.info("Loan Approval task: {}", task);
         loanApplicationRepository.save(loanApplication.get());
+        log.info("Loan Application: {}", loanApplication);
         // Element Id
 
         log.info("task element id {}", delegateTask.getId());
