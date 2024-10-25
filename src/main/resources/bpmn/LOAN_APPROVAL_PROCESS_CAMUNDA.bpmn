@@ -100,7 +100,7 @@
         <bpmn:messageEventDefinition id="MessageEventDefinition_0u0zte3" messageRef="Message_06aga38" />
       </bpmn:startEvent>
     </bpmn:subProcess>
-    <bpmn:serviceTask id="Activity_CheckFormCompletness" name="Check for form completeness and format" camunda:delegateExpression="${checkForFormCompletenessServiceTask}">
+    <bpmn:serviceTask id="Activity_CheckFormCompletness" name="Check for form completeness and format" camunda:type="external" camunda:topic="checkForFormCompletenessServiceTask">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_msgStartEvent_to_checkFormCompletness</bpmn:incoming>
       <bpmn:incoming>Flow_0oyeqjo</bpmn:incoming>
@@ -365,12 +365,6 @@
           <dc:Bounds x="1558" y="328" width="51" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1mdewew_di" bpmnElement="Event_1hnqcys">
-        <dc:Bounds x="2007" y="529" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1982" y="567" width="86" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_12pkyh1_di" bpmnElement="Activity_18tnpxp" isExpanded="true">
         <dc:Bounds x="480" y="990" width="350" height="200" />
         <bpmndi:BPMNLabel />
@@ -526,6 +520,12 @@
       <bpmndi:BPMNShape id="Activity_1w860m8_di" bpmnElement="Activity_0i1x65j">
         <dc:Bounds x="2090" y="620" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1mdewew_di" bpmnElement="Event_1hnqcys">
+        <dc:Bounds x="2007" y="529" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1982" y="567" width="86" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1ba2kzx_di" bpmnElement="Flow_1ba2kzx" bioc:stroke="#205022">
         <di:waypoint x="1584" y="415" />

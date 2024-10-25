@@ -35,5 +35,15 @@ camunda:
       firstName: Demo
     filter:
       create: All tasks
+    client:
+      base-url: http://localhost:9090/engine-rest
+      subscriptions:
+        externalServiceTask:
+          variable-names: [loan-id]
+          process-definition-key: LOAN_APPROVAL_PROCESS
+
+
+
+
 
 
