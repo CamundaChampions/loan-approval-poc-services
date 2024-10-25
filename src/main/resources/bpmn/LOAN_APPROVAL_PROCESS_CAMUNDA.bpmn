@@ -86,7 +86,7 @@
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_0rd1bwl" sourceRef="Event_0b3lsfm" targetRef="Activity_1gqa7l5" />
       <bpmn:sequenceFlow id="Flow_0rwszj3" sourceRef="Activity_1gqa7l5" targetRef="Event_0qeq13x" />
-      <bpmn:serviceTask id="Activity_1gqa7l5" name="Process Application Cancellation" camunda:delegateExpression="${cancelApplicationServiceTask}">
+      <bpmn:serviceTask id="Activity_1gqa7l5" name="Process Application Cancellation" camunda:type="external" camunda:topic="cancelApplicationServiceTask">
         <bpmn:extensionElements>
           <camunda:inputOutput>
             <camunda:inputParameter name="cancelType">Cancelled</camunda:inputParameter>
@@ -106,7 +106,7 @@
       <bpmn:incoming>Flow_0oyeqjo</bpmn:incoming>
       <bpmn:outgoing>Flow_1kstsml</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1i8mani" name="Disbursement Instruction" camunda:delegateExpression="${disbursementInstructionServiceTask}">
+    <bpmn:serviceTask id="Activity_1i8mani" name="Disbursement Instruction" camunda:type="external" camunda:topic="disbursementInstructionServiceTask">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1r6cn4k</bpmn:incoming>
       <bpmn:outgoing>Flow_0e7waix</bpmn:outgoing>
@@ -175,12 +175,12 @@
     <bpmn:sequenceFlow id="Flow_1tdztvm" name="No" sourceRef="Gateway_1213rk1" targetRef="Activity_09addmn">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!hasMissingData}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sendTask id="Activity_requestForMissingApplicationData" name="Notify Applicant to provide missing data" camunda:delegateExpression="${notifyToApplicantServiceTask}">
+    <bpmn:sendTask id="Activity_requestForMissingApplicationData" name="Notify Applicant to provide missing data" camunda:type="external" camunda:topic="notifyToApplicantServiceTask">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_0jbfdef</bpmn:incoming>
       <bpmn:outgoing>Flow_0394oaf</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sendTask id="Activity_1dunbtg" name="Notify Applicant to provide missing documents" camunda:delegateExpression="${notifyToApplicantServiceTask}">
+    <bpmn:sendTask id="Activity_1dunbtg" name="Notify Applicant to provide missing documents" camunda:type="external" camunda:topic="notifyToApplicantServiceTask">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_0a9f9es</bpmn:incoming>
       <bpmn:outgoing>Flow_1lb00v7</bpmn:outgoing>
@@ -190,12 +190,12 @@
       <bpmn:outgoing>Flow_05bt797</bpmn:outgoing>
       <bpmn:outgoing>Flow_07yc8ef</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_09addmn" name="Risk Scoring" camunda:delegateExpression="${riskScoringServiceTask}">
+    <bpmn:serviceTask id="Activity_09addmn" name="Risk Scoring" camunda:type="external" camunda:topic="riskScoringServiceTask">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1tdztvm</bpmn:incoming>
       <bpmn:outgoing>Flow_17afgne</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sendTask id="Activity_1bj9jpi" name="Trigger Document Signing" camunda:delegateExpression="${notifyForDocumentSigning}">
+    <bpmn:sendTask id="Activity_1bj9jpi" name="Trigger Document Signing" camunda:type="external" camunda:topic="notifyForDocumentSigning">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">"docSigning"</camunda:inputParameter>
@@ -232,7 +232,7 @@
     <bpmn:sequenceFlow id="Flow_0a9f9es" name="Yes" sourceRef="Gateway_1213rk1" targetRef="Activity_1dunbtg">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasMissingData}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_creditCheck" name="Credit Check" camunda:delegateExpression="${creditCheckServiceTask}">
+    <bpmn:serviceTask id="Activity_creditCheck" name="Credit Check" camunda:type="external" camunda:topic="creditCheckServiceTask">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1xyi20u</bpmn:incoming>
       <bpmn:outgoing>Flow_1saa5ze</bpmn:outgoing>
@@ -248,7 +248,7 @@
       <bpmn:incoming>Flow_16rcq75</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_17adyj8" sourceRef="Event_0j7ajip" targetRef="Activity_0zd5kqs" />
-    <bpmn:serviceTask id="Activity_0zd5kqs" name="Auto-close" camunda:delegateExpression="${cancelApplicationServiceTask}">
+    <bpmn:serviceTask id="Activity_0zd5kqs" name="Auto-close" camunda:type="external" camunda:topic="cancelApplicationServiceTask">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="cancelType">Auto_Cancelled</camunda:inputParameter>
@@ -259,7 +259,7 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_16rcq75" sourceRef="Activity_0zd5kqs" targetRef="Event_0xbpp5h" />
     <bpmn:sequenceFlow id="Flow_0hpkc41" sourceRef="Event_1glqrtj" targetRef="Activity_0k0kpdx" />
-    <bpmn:serviceTask id="Activity_0k0kpdx" name="Auto-close" camunda:delegateExpression="${cancelApplicationServiceTask}">
+    <bpmn:serviceTask id="Activity_0k0kpdx" name="Auto-close" camunda:type="external" camunda:topic="cancelApplicationServiceTask">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="cancelType">Auto_Cancelled</camunda:inputParameter>
@@ -275,7 +275,7 @@
     <bpmn:sequenceFlow id="Flow_0ovam42" name="Rejected" sourceRef="Gateway_1u8e1dx" targetRef="Activity_0dnkkez">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "REJECT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0dnkkez" name="Reject Application" camunda:delegateExpression="${cancelApplicationServiceTask}">
+    <bpmn:serviceTask id="Activity_0dnkkez" name="Reject Application" camunda:type="external" camunda:topic="cancelApplicationServiceTask">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="cancelType">Rejected</camunda:inputParameter>
@@ -293,7 +293,7 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_07ra654" sourceRef="Gateway_0fss3z9" targetRef="Event_1ps3e0a" />
     <bpmn:sequenceFlow id="Flow_0cwws4o" sourceRef="Event_1ps3e0a" targetRef="Activity_0i1x65j" />
-    <bpmn:serviceTask id="Activity_0i1x65j" name="Auto-close" camunda:delegateExpression="${cancelApplicationServiceTask}">
+    <bpmn:serviceTask id="Activity_0i1x65j" name="Auto-close" camunda:type="external" camunda:topic="cancelApplicationServiceTask">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="cancelType">Auto_Cancelled</camunda:inputParameter>
