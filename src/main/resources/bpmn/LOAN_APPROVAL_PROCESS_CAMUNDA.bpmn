@@ -73,7 +73,7 @@
       <bpmn:incoming>Flow_0e7waix</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1ba2kzx" name="Approved" sourceRef="Gateway_1u8e1dx" targetRef="Activity_1bj9jpi">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "APROVED"}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "APPROVE"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_1u8e1dx" name="Approved/ Rejected">
       <bpmn:incoming>Flow_163p03s</bpmn:incoming>
@@ -273,7 +273,7 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0euxgtp" sourceRef="Activity_0k0kpdx" targetRef="Event_0rsp40j" />
     <bpmn:sequenceFlow id="Flow_0ovam42" name="Rejected" sourceRef="Gateway_1u8e1dx" targetRef="Activity_0dnkkez">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "REJECT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_0dnkkez" name="Reject Application" camunda:delegateExpression="${cancelApplicationServiceTask}">
       <bpmn:extensionElements>

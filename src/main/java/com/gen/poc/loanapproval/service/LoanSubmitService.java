@@ -13,14 +13,14 @@ import com.gen.poc.loanapproval.repository.LoanSummaryRepository;
 import com.gen.poc.loanapproval.repository.entity.LoanApplication;
 import com.gen.poc.loanapproval.repository.entity.LoanApprovalTask;
 import com.gen.poc.loanapproval.repository.entity.LoanSummary;
-import com.gen.poc.loanapproval.services.mapper.LoanRequestMapper;
 
+
+import com.gen.poc.loanapproval.service.mapper.LoanRequestMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.engine.task.Task;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
