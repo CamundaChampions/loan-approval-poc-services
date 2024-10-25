@@ -33,15 +33,12 @@ public class NotifyForDocumentSigning implements ExternalTaskHandler {
     @Override
     public void execute(ExternalTask externalTask, ExternalTaskService externalTaskService) {
 
-        VariableMap variables = Variables.createVariables();
-        Long loanApplicationId = (Long) externalTask.getVariable("loan-id");
+        Long loanApplicationId =  externalTask.getVariable("loan-id");
         LoanApplication loanApplication = findLoanApplicationById(loanApplicationId);
 
         loanApplication.setStatus(LoanApplicationStatus.PENDING_DOCUMENT_SIGNING);
         loanApplicationRepository.save(loanApplication);
-        //This line is not needed
-        variables.put("documentSigningAcknowledgement", String.format(AppConstants.DOC_SIGN_CORRELATION_KEY, externalTask.getProcessInstanceId()));
-        externalTaskService.complete(externalTask, variables);
+        externalTaskService.complete(externalTask);
         log.info("test notifyForDocumentSigning worker");
     }
 

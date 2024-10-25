@@ -37,23 +37,17 @@ public class NotifyToApplicantExternalTask implements ExternalTaskHandler {
         String taskType = (String) externalTask.getVariable("taskType");
         Optional<LoanApplication> loanApplication = loanApplicationRepository.findById(loanApplicationId);
         VariableMap variables = Variables.createVariables();
-        loanApplication.ifPresent(loadApp -> {
+        loanApplication.ifPresent(loanApp -> {
 
-            if (LoanApplicationStatus.CREATED.equals(loadApp.getStatus()) && !isApplicationComplete) {
-                loadApp.setStatus(LoanApplicationStatus.PENDING_DATA_CORRECTION);
-                //This is not needed - will remove this line.
-                variables.put("missingAppDataReceivedAcknowledgement", String.format(AppConstants.APP_UPDATED_CORRELATION_KEY, externalTask.getProcessInstanceId()));
+            if (LoanApplicationStatus.CREATED.equals(loanApp.getStatus()) && !isApplicationComplete) {
+                loanApp.setStatus(LoanApplicationStatus.PENDING_DATA_CORRECTION);
             } else if ("docSigning".equals(taskType)) {
-                loadApp.setStatus(LoanApplicationStatus.PENDING_DOCUMENT_SIGNING);
-                //This is not needed - will remove this line.
-                variables.put("documentSigningAcknowledgement", String.format(AppConstants.DOC_SIGN_CORRELATION_KEY, externalTask.getProcessInstanceId()));
-            } else if (LoanApplicationStatus.PENDING_FINANCIAL_ASSESSMENT_MANAGER_APPROVAL.equals(loadApp.getStatus())
+                loanApp.setStatus(LoanApplicationStatus.PENDING_DOCUMENT_SIGNING);
+            } else if (LoanApplicationStatus.PENDING_FINANCIAL_ASSESSMENT_MANAGER_APPROVAL.equals(loanApp.getStatus())
                     && (boolean) externalTask.getVariable("hasMissingData")) {
-                loadApp.setStatus(LoanApplicationStatus.AWAITING_MISSING_DOCUMENT);
-                //This is not needed - will remove this line.
-                variables.put("missingDocProvidedAcknowledgement", String.format(AppConstants.MISSING_DOC_CORRELATION_KEY, externalTask.getProcessInstanceId()));
+                loanApp.setStatus(LoanApplicationStatus.AWAITING_MISSING_DOCUMENT);
             }
-            loanApplicationRepository.save(loadApp);
+            loanApplicationRepository.save(loanApp);
             log.info("test notifyToApplicantServiceTask Completed");
         });
 
