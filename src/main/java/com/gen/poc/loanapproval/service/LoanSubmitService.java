@@ -58,9 +58,6 @@ public class LoanSubmitService {
         Map<String, Object> params = new HashMap<>();
         params.put("loan-id", loanApplication.getLoanApplicationId());
         params.put("userId", userId);
-        // params.put("hasMissingData", false);
-        params.put(EVNTSTARTMSGEVENT_CANCELLATION, EVNTSTARTMSGEVENT_CANCELLATION.concat("-").concat(String.valueOf(loanApplication.getLoanApplicationId())));
-
         ProcessInstance processInstance = workflowService.createProcessInstance("LOAN_APPROVAL_PROCESS", loanApplication.getLoanApplicationId(), params);
 
         loanApplication.setProcessInstanceId(String.valueOf(processInstance.getProcessInstanceId()));
