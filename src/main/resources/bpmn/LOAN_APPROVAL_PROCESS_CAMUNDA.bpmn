@@ -47,9 +47,7 @@
         <bpmn:flowNodeRef>Activity_0i1x65j</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1hnqcys</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_0w5idb3" name="Loan Cancellation task">
-        <bpmn:flowNodeRef>Activity_18tnpxp</bpmn:flowNodeRef>
-      </bpmn:lane>
+      <bpmn:lane id="Lane_0w5idb3" name="Loan Cancellation task" />
     </bpmn:laneSet>
     <bpmn:intermediateCatchEvent id="Event_1ps3e0a" name="10 Days Expiring">
       <bpmn:incoming>Flow_07ra654</bpmn:incoming>
@@ -82,27 +80,6 @@
       <bpmn:outgoing>Flow_1ba2kzx</bpmn:outgoing>
       <bpmn:outgoing>Flow_0ovam42</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:subProcess id="Activity_18tnpxp" name="Cancel Application" triggeredByEvent="true">
-      <bpmn:endEvent id="Event_0qeq13x" name="Application Cancelled">
-        <bpmn:incoming>Flow_0rwszj3</bpmn:incoming>
-      </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_0rd1bwl" sourceRef="Event_0b3lsfm" targetRef="Activity_1gqa7l5" />
-      <bpmn:sequenceFlow id="Flow_0rwszj3" sourceRef="Activity_1gqa7l5" targetRef="Event_0qeq13x" />
-      <bpmn:serviceTask id="Activity_1gqa7l5" name="Process Application Cancellation" implementation="##WebService">
-        <bpmn:extensionElements>
-          <zeebe:ioMapping>
-            <zeebe:input source="Cancelled" target="cancelType" />
-          </zeebe:ioMapping>
-          <zeebe:taskDefinition type="cancelApplicationServiceTask" />
-        </bpmn:extensionElements>
-        <bpmn:incoming>Flow_0rd1bwl</bpmn:incoming>
-        <bpmn:outgoing>Flow_0rwszj3</bpmn:outgoing>
-      </bpmn:serviceTask>
-      <bpmn:startEvent id="Event_0b3lsfm" name="Application Cancellation request recived">
-        <bpmn:outgoing>Flow_0rd1bwl</bpmn:outgoing>
-        <bpmn:messageEventDefinition id="MessageEventDefinition_0275eme" messageRef="Message_06aga38" />
-      </bpmn:startEvent>
-    </bpmn:subProcess>
     <bpmn:serviceTask id="Activity_CheckFormCompletness" name="Check for form completeness and format" implementation="##WebService">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="checkForFormCompletenessServiceTask" />
@@ -402,34 +379,6 @@
           <dc:Bounds x="1558" y="328" width="51" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_12pkyh1_di" bpmnElement="Activity_18tnpxp" isExpanded="true">
-        <dc:Bounds x="480" y="990" width="350" height="200" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0qeq13x_di" bpmnElement="Event_0qeq13x">
-        <dc:Bounds x="772" y="1072" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="768" y="1115" width="53" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02wpcu5_di" bpmnElement="Activity_1gqa7l5">
-        <dc:Bounds x="610" y="1050" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0817jns_di" bpmnElement="Event_0b3lsfm">
-        <dc:Bounds x="520" y="1072" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="504" y="1115" width="76" height="40" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0rd1bwl_di" bpmnElement="Flow_0rd1bwl">
-        <di:waypoint x="556" y="1090" />
-        <di:waypoint x="610" y="1090" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0rwszj3_di" bpmnElement="Flow_0rwszj3">
-        <di:waypoint x="710" y="1090" />
-        <di:waypoint x="772" y="1090" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_1i8w98o_di" bpmnElement="Activity_CheckFormCompletness">
         <dc:Bounds x="335" y="507" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -660,7 +609,7 @@
         <di:waypoint x="252" y="547" />
         <di:waypoint x="335" y="547" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="258" y="529" width="80" height="40" />
+          <dc:Bounds x="258" y="480" width="80" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0jbfdef_di" bpmnElement="Flow_0jbfdef" bioc:stroke="#831311">

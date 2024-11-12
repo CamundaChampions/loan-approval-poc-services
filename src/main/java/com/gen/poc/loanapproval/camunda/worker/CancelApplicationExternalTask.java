@@ -44,7 +44,7 @@ public class CancelApplicationExternalTask {
         if (StringUtils.equals(cancelType, "Rejected")) {
             loanApplicationStatus = LoanApplicationStatus.REJECTED;
         }
-        Long loanApplicationId = (Long) job.getVariable("loan-id");
+        long loanApplicationId =Long.valueOf((Integer) job.getVariable("loan-id"));
         cancelLoanApplication(loanApplicationId, loanApplicationStatus);
     }
 

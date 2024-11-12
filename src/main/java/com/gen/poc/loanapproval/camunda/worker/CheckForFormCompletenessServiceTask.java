@@ -3,6 +3,7 @@ package com.gen.poc.loanapproval.camunda.worker;
 import com.gen.poc.loanapproval.repository.LoanApplicationRepository;
 import com.gen.poc.loanapproval.repository.entity.LoanApplication;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +24,9 @@ public class CheckForFormCompletenessServiceTask {
      * @param job
      */
     @JobWorker(type = "checkForFormCompletenessServiceTask")
-    public Map<String, Object> execute(final ActivatedJob job) {
+    public Map<String, Object> execute( final ActivatedJob job) {
         log.info("test checkForFormCompletenessServiceTask worker");
-        Long loanApplicationId = (Long)  job.getVariable("loan-id");
+        long loanApplicationId =Long.valueOf((Integer) job.getVariable("loan-id"));
 
         Optional<LoanApplication> loanApplication = loanApplicationRepository.findById(loanApplicationId);
 

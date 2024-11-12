@@ -24,7 +24,7 @@ public class NotifyForDocumentSigning {
     @JobWorker(type = "notifyForDocumentSigning")
     public void execute(final ActivatedJob job) {
 
-        Long loanApplicationId = (Long) job.getVariable("loan-id");
+        long loanApplicationId =Long.valueOf((Integer) job.getVariable("loan-id"));
         LoanApplication loanApplication = findLoanApplicationById(loanApplicationId);
 
         loanApplication.setStatus(LoanApplicationStatus.PENDING_DOCUMENT_SIGNING);

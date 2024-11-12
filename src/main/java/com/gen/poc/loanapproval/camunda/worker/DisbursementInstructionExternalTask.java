@@ -20,11 +20,11 @@ public class DisbursementInstructionExternalTask {
     /**
      * @param job
      */
-    @JobWorker(type = "checkForFormCompletenessServiceTask")
+    @JobWorker(type = "disbursementInstructionServiceTask")
     public void execute(final ActivatedJob job) {
         log.info("test disbursementInstructionServiceTask worker");
 
-        Long loanApplicationId = (Long) job.getVariable("loan-id");
+        long loanApplicationId =Long.valueOf((Integer) job.getVariable("loan-id"));
         Optional<LoanApplication> loanApplication = loanApplicationRepository.findById(loanApplicationId);
         loanApplication.get().setStatus(LoanApplicationStatus.APPROVE_AND_DISBURSED);
         loanApplicationRepository.save(loanApplication.get());

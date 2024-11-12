@@ -27,7 +27,7 @@ public class NotifyToApplicantExternalTask {
     public Map<String, Object> execute(final ActivatedJob job) {
 
 
-        Long loanApplicationId = (Long) job.getVariable("loan-id");
+        long loanApplicationId =Long.valueOf((Integer) job.getVariable("loan-id"));
         boolean isApplicationComplete = (boolean) job.getVariable("isApplicationComplete");
         String taskType = (String) job.getVariable("taskType");
         Optional<LoanApplication> loanApplication = loanApplicationRepository.findById(loanApplicationId);
