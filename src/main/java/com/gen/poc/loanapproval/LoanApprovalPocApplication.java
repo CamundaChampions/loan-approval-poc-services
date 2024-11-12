@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-@Deployment(resources = {"classpath:bpmn/LOAN_APPROVAL_PROCESS.bpmn"})
+@Deployment(resources = {"classpath:bpmn/*.bpmn"})
 public class LoanApprovalPocApplication {
 
 	public static void main(String[] args) {
