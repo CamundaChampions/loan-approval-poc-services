@@ -94,6 +94,7 @@ public class LoanSubmitService {
 
     public void acknowledgeDocumentSigning(String loanId, Map<String, Object> additionalParam) {
         LoanApplication loanApplication = findLoanApplicationById(Long.valueOf(loanId));
+        log.info("Process Instance ID: {}", loanApplication.getProcessInstanceId());
         camundaOperationWrapperService.triggerCorrelateMessage(AppConstants.MSGEVNT_SIGNED_DOC_RECEIVED,
                 String.format(AppConstants.DOC_SIGN_CORRELATION_KEY, loanApplication.getProcessInstanceId()),
                 additionalParam);
