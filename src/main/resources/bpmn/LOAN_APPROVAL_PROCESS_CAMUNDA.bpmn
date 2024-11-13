@@ -47,7 +47,9 @@
         <bpmn:flowNodeRef>Activity_0i1x65j</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1hnqcys</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_0w5idb3" name="Loan Cancellation task" />
+      <bpmn:lane id="Lane_0w5idb3" name="Loan Cancellation task">
+        <bpmn:flowNodeRef>Activity_18tnpxp</bpmn:flowNodeRef>
+      </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:intermediateCatchEvent id="Event_1ps3e0a" name="10 Days Expiring">
       <bpmn:incoming>Flow_07ra654</bpmn:incoming>
@@ -253,7 +255,7 @@
         <zeebe:ioMapping>
           <zeebe:input source="Auto_Cancelled" target="cancelType" />
         </zeebe:ioMapping>
-        <zeebe:taskDefinition type="cancelApplicationServiceTask" />
+        <zeebe:taskDefinition type="RejectOrAutoCloseApplicationServiceTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_17adyj8</bpmn:incoming>
       <bpmn:outgoing>Flow_16rcq75</bpmn:outgoing>
@@ -265,7 +267,7 @@
         <zeebe:ioMapping>
           <zeebe:input source="Auto_Cancelled" target="cancelType" />
         </zeebe:ioMapping>
-        <zeebe:taskDefinition type="cancelApplicationServiceTask" />
+        <zeebe:taskDefinition type="RejectOrAutoCloseApplicationServiceTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0hpkc41</bpmn:incoming>
       <bpmn:outgoing>Flow_0euxgtp</bpmn:outgoing>
@@ -283,7 +285,7 @@
         <zeebe:ioMapping>
           <zeebe:input source="Rejected" target="cancelType" />
         </zeebe:ioMapping>
-        <zeebe:taskDefinition type="cancelApplicationServiceTask" />
+        <zeebe:taskDefinition type="RejectOrAutoCloseApplicationServiceTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ovam42</bpmn:incoming>
       <bpmn:outgoing>Flow_0xzoakm</bpmn:outgoing>
@@ -302,7 +304,7 @@
         <zeebe:ioMapping>
           <zeebe:input source="Auto_Cancelled" target="cancelType" />
         </zeebe:ioMapping>
-        <zeebe:taskDefinition type="cancelApplicationServiceTask" />
+        <zeebe:taskDefinition type="RejectOrAutoCloseApplicationServiceTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0cwws4o</bpmn:incoming>
       <bpmn:outgoing>Flow_04jy18y</bpmn:outgoing>
@@ -314,6 +316,24 @@
       <bpmn:outgoing>Flow_1r6cn4k</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1q9xqq1" messageRef="Message_00nvove" />
     </bpmn:intermediateCatchEvent>
+    <bpmn:subProcess id="Activity_18tnpxp" name="Cancel Application" triggeredByEvent="true">
+      <bpmn:startEvent id="Event_1m54v7e">
+        <bpmn:outgoing>Flow_0zgu0eo</bpmn:outgoing>
+        <bpmn:messageEventDefinition id="MessageEventDefinition_1nqgbol" messageRef="Message_06aga38" />
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0zgu0eo" sourceRef="Event_1m54v7e" targetRef="Activity_0hsnvn5" />
+      <bpmn:serviceTask id="Activity_0hsnvn5" name="Process Application Cancellation">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="cancelApplicationServiceTask" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0zgu0eo</bpmn:incoming>
+        <bpmn:outgoing>Flow_1p1w2ao</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:endEvent id="Event_03v8aby">
+        <bpmn:incoming>Flow_1p1w2ao</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1p1w2ao" sourceRef="Activity_0hsnvn5" targetRef="Event_03v8aby" />
+    </bpmn:subProcess>
   </bpmn:process>
   <bpmn:message id="Message_2l417h0" name="MSGEVNT_MISSING_APP_DATA_RECIEVED_AKNWLG">
     <bpmn:extensionElements>
@@ -518,6 +538,28 @@
           <dc:Bounds x="1982" y="567" width="86" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_098j1tj" bpmnElement="Activity_18tnpxp" isExpanded="true">
+        <dc:Bounds x="680" y="1000" width="350" height="200" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0mfmucw_di" bpmnElement="Event_1m54v7e">
+        <dc:Bounds x="712" y="1062" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0uucqdq_di" bpmnElement="Activity_0hsnvn5">
+        <dc:Bounds x="800" y="1040" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_03v8aby_di" bpmnElement="Event_03v8aby">
+        <dc:Bounds x="952" y="1062" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0zgu0eo_di" bpmnElement="Flow_0zgu0eo">
+        <di:waypoint x="748" y="1080" />
+        <di:waypoint x="800" y="1080" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p1w2ao_di" bpmnElement="Flow_1p1w2ao">
+        <di:waypoint x="900" y="1080" />
+        <di:waypoint x="952" y="1080" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ba2kzx_di" bpmnElement="Flow_1ba2kzx" bioc:stroke="#205022">
         <di:waypoint x="1584" y="415" />
         <di:waypoint x="1584" y="470" />

@@ -54,6 +54,7 @@ public class LoanSubmitService {
         Map<String, Object> params = new HashMap<>();
         params.put("loan-id", loanApplication.getLoanApplicationId());
         params.put("userId", userId);
+        params.put(EVNTSTARTMSGEVENT_CANCELLATION, EVNTSTARTMSGEVENT_CANCELLATION.concat("-").concat(String.valueOf(loanApplication.getLoanApplicationId())));
         final ProcessInstanceEvent processInstanceEvent = camundaOperationWrapperService.createCamundaProcessInstance("LOAN_APPROVAL_PROCESS", params);
 
         loanApplication.setProcessInstanceId(String.valueOf(processInstanceEvent.getProcessInstanceKey()));
