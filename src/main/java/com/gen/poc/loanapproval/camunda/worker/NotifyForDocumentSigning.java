@@ -6,6 +6,7 @@ import com.gen.poc.loanapproval.exception.LoanNotFoundException;
 import com.gen.poc.loanapproval.repository.LoanApplicationRepository;
 import com.gen.poc.loanapproval.repository.entity.LoanApplication;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ public class NotifyForDocumentSigning {
      * @param job
      */
     @JobWorker(type = "notifyForDocumentSigning", autoComplete = true)
-    public Map<String, Object> execute(final ActivatedJob job) {
+    public Map<String, Object> execute(final JobClient client, final ActivatedJob job) {
 
         Map<String, Object> returnType = new HashMap<>();
         long loanApplicationId =Long.valueOf((Integer) job.getVariable("loan-id"));
