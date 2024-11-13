@@ -32,6 +32,12 @@ public class CancelApplicationExternalTask {
      */
     @JobWorker(type = "cancelApplicationServiceTask")
     public void execute(final ActivatedJob job) {
+        long loanApplicationId =Long.valueOf((Integer) job.getVariable("loan-id"));
+        cancelLoanApplication(loanApplicationId, LoanApplicationStatus.CANCELLED);
+    }
+
+    @JobWorker(type = "RejectOrAutoCloseApplicationServiceTask")
+    public void RejectOrAutoCloseApplication(final ActivatedJob job) {
         String cancelType = (String) job.getVariable("cancelType");
         log.info("cancelType: {}", cancelType);
         LoanApplicationStatus loanApplicationStatus = null;
