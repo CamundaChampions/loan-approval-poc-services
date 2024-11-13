@@ -27,13 +27,32 @@ spring:
       enabled: true
       path: /h2-console
 
+zeebe:
+  client:
+    security:
+      plaintext: true
+    broker:
+      grpcAddress: http://127.0.0.1:26500
+      restAddress: http://127.0.0.1:8080
+
 camunda:
-  bpm:
-    admin-user:
-      id: demo
-      password: demo
-      firstName: Demo
-    filter:
-      create: All tasks
+  client:
+    tasklist:
+      base-url: http://127:0:0:1:8080
+      enabled: true
+    operate:
+      base-url: http://127:0:0:1:8080
+      enabled: true
+    mode: selfManaged
+    zeebe:
+      prefer-rest-over-grpc: false
+      base-url: http://127:0:0:1:8080
+      gateway-url: http://127:0:0:1:26500
+
+
+
+
+
+
 
 

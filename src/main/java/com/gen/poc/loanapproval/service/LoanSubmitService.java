@@ -1,5 +1,6 @@
 package com.gen.poc.loanapproval.service;
 
+import com.gen.poc.loanapproval.camunda.services.CamundaOperationWrapperService;
 import com.gen.poc.loanapproval.constant.AppConstants;
 import com.gen.poc.loanapproval.dto.LoanRequestDTO;
 import com.gen.poc.loanapproval.dto.LoanSummaryDto;
@@ -16,11 +17,10 @@ import com.gen.poc.loanapproval.repository.entity.LoanSummary;
 
 
 import com.gen.poc.loanapproval.service.mapper.LoanRequestMapper;
+import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -34,17 +34,13 @@ import static com.gen.poc.loanapproval.constant.AppConstants.EVNTSTARTMSGEVENT_C
 @RequiredArgsConstructor
 public class LoanSubmitService {
 
-    private final WorkflowService workflowService;
-
     private final LoanRequestMapper loanRequestMapper;
 
     private final LoanApplicationRepository loanApplicationRepository;
 
     private final LoanApprovalTaskRepository loanApprovalTaskRepository;
 
-    private final CustomTaskService customTaskService;
-
-    private final RuntimeService runtimeService;
+    private final CamundaOperationWrapperService camundaOperationWrapperService;
 
     private final LoanSummaryRepository loanSummaryRepository;
 
@@ -58,12 +54,10 @@ public class LoanSubmitService {
         Map<String, Object> params = new HashMap<>();
         params.put("loan-id", loanApplication.getLoanApplicationId());
         params.put("userId", userId);
-        // params.put("hasMissingData", false);
         params.put(EVNTSTARTMSGEVENT_CANCELLATION, EVNTSTARTMSGEVENT_CANCELLATION.concat("-").concat(String.valueOf(loanApplication.getLoanApplicationId())));
+        final ProcessInstanceEvent processInstanceEvent = camundaOperationWrapperService.createCamundaProcessInstance("LOAN_APPROVAL_PROCESS", params);
 
-        ProcessInstance processInstance = workflowService.createProcessInstance("LOAN_APPROVAL_PROCESS", loanApplication.getLoanApplicationId(), params);
-
-        loanApplication.setProcessInstanceId(String.valueOf(processInstance.getProcessInstanceId()));
+        loanApplication.setProcessInstanceId(String.valueOf(processInstanceEvent.getProcessInstanceKey()));
         loanApplicationRepository.save(loanApplication);
         return String.valueOf(loanApplication.getLoanApplicationId());
     }
@@ -96,24 +90,22 @@ public class LoanSubmitService {
 
         loanApprovalTask.setStatus(status);
         loanApprovalTaskRepository.save(loanApprovalTask);
-        customTaskService.complete(loanApprovalTask.getTaskInstanceId(), variable);
+        camundaOperationWrapperService.completeUserTask(loanApprovalTask.getTaskInstanceId(), variable);
     }
 
     public void acknowledgeDocumentSigning(String loanId, Map<String, Object> additionalParam) {
-        //runtimeService.correlateMessage(String.format(AppConstants.DOC_SIGN_CORRELATION_KEY, loanApplication.getProcessInstanceId()), loanId, additionalParam);
-        runtimeService.createMessageCorrelation("MSGEVNT_SIGNED_DOC_RECIEVED")// Message name
-                .processInstanceBusinessKey(loanId) // Correlation key
-                .setVariables(additionalParam) // Variables to pass
-                .correlate();
+        LoanApplication loanApplication = findLoanApplicationById(Long.valueOf(loanId));
+        log.info("Process Instance ID: {}", loanApplication.getProcessInstanceId());
+        camundaOperationWrapperService.triggerCorrelateMessage(AppConstants.MSGEVNT_SIGNED_DOC_RECEIVED,
+                String.format(AppConstants.DOC_SIGN_CORRELATION_KEY, loanApplication.getProcessInstanceId()),
+                additionalParam);
     }
 
     public void acknowledgeDocumentReAssessment(String loanId, Map<String, Object> additionalParam) {
         LoanApplication loanApplication = findLoanApplicationById(Long.valueOf(loanId));
-
-        runtimeService.createMessageCorrelation(AppConstants.MSGEVNT_AKNOWLEDGE_MISSING_DOC_PROVIDED)// Message name
-                .processInstanceBusinessKey(loanId) // Correlation key
-                .setVariables(additionalParam) // Variables to pass
-                .correlate();
+        camundaOperationWrapperService.triggerCorrelateMessage(AppConstants.MSGEVNT_AKNOWLEDGE_MISSING_DOC_PROVIDED,
+                String.format(AppConstants.MISSING_DOC_CORRELATION_KEY, loanApplication.getProcessInstanceId()),
+                additionalParam);
 
     }
 
@@ -136,11 +128,9 @@ public class LoanSubmitService {
         // validate and verify if application is complete now
         if (ObjectUtils.allNotNull(loanApplication.getAmount(), loanApplication.getLoanCategory(), loanApplication.getTerm())
                 && loanApplication.getAmount().longValue() > 0 && loanApplication.getTerm() > 0) {
-            additionalParam.put("isApplicationComplete", true);
-            runtimeService.createMessageCorrelation(AppConstants.MSGEVNT_MISSING_APP_DATA_RECIEVED_AKNWLG)// Message name
-                    .processInstanceBusinessKey(loanId) // Correlation key
-                    .setVariables(additionalParam) // Variables to pass
-                    .correlate();
+            camundaOperationWrapperService.triggerCorrelateMessage(AppConstants.MSGEVNT_MISSING_APP_DATA_RECIEVED_AKNWLG,
+                    String.format(AppConstants.APP_UPDATED_CORRELATION_KEY, loanApplication.getProcessInstanceId()),
+                    additionalParam);
         } else {
             log.info("Mandatory data is invalid or not provided cannot proceed");
         }
@@ -212,10 +202,8 @@ public class LoanSubmitService {
                 .contains(loanSummary.getStatusCode()))
             throw new LoanNotFoundException(loanId);
 
-        runtimeService.createMessageCorrelation(EVNTSTARTMSGEVENT_CANCELLATION)// Message name
-                .processInstanceBusinessKey(String.valueOf(loanId))// Correlation key
-                .setVariables(new HashMap<>()) // Variables to pass
-                .correlate();
+        camundaOperationWrapperService.triggerCorrelateMessage(EVNTSTARTMSGEVENT_CANCELLATION,
+                EVNTSTARTMSGEVENT_CANCELLATION.concat("-").concat(String.valueOf(loanId)), new HashMap<>());
     }
 
 

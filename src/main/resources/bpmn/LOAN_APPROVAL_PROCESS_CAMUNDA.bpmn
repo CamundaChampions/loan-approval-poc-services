@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:color="http://bpmn.io/schema/bpmn/color/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0pmx8jg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.27.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
-  <bpmn:collaboration id="LOAN_APPROVAL_PROCESS_COLL">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:color="http://bpmn.io/schema/bpmn/color/1.0" xmlns:conversion="http://camunda.org/schema/conversion/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0pmx8jg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.27.0" conversion:converterVersion="0.10.2-SNAPSHOT" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <bpmn:collaboration id="LOAN_APPROVAL_PROCESS_COLL" isClosed="false">
     <bpmn:participant id="Participant_Loan_processing" name="Loan Prcessing" processRef="LOAN_APPROVAL_PROCESS" />
     <bpmn:participant id="Participant_1dte9e0" name="Applicant" />
     <bpmn:participant id="Participant_0h27ax1" name="Financial Assessment Manager" />
@@ -10,7 +10,8 @@
     <bpmn:messageFlow id="Flow_1xew3dp" sourceRef="Participant_0qz8m1p" targetRef="Activity_0ym4juq" />
     <bpmn:messageFlow id="Flow_0y9jbfl" sourceRef="Participant_1dte9e0" targetRef="Event_1hnqcys" />
   </bpmn:collaboration>
-  <bpmn:process id="LOAN_APPROVAL_PROCESS" name="LOAN APPROVAL PROCESS" isExecutable="true" camunda:historyTimeToLive="180">
+  <bpmn:process id="LOAN_APPROVAL_PROCESS" name="LOAN APPROVAL PROCESS" processType="None" isClosed="false" isExecutable="true">
+    <bpmn:extensionElements />
     <bpmn:laneSet id="LaneSet_0a4k250">
       <bpmn:lane id="Loan_processing" name="Loan Processing steps">
         <bpmn:flowNodeRef>Activity_1bj9jpi</bpmn:flowNodeRef>
@@ -73,55 +74,41 @@
       <bpmn:incoming>Flow_0e7waix</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1ba2kzx" name="Approved" sourceRef="Gateway_1u8e1dx" targetRef="Activity_1bj9jpi">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "APPROVE"}</bpmn:conditionExpression>
+      <bpmn:extensionElements />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=decision = "APPROVE"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_1u8e1dx" name="Approved/ Rejected">
       <bpmn:incoming>Flow_163p03s</bpmn:incoming>
       <bpmn:outgoing>Flow_1ba2kzx</bpmn:outgoing>
       <bpmn:outgoing>Flow_0ovam42</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:subProcess id="Activity_18tnpxp" name="Cancel Application" triggeredByEvent="true">
-      <bpmn:endEvent id="Event_0qeq13x" name="Application Cancelled">
-        <bpmn:incoming>Flow_0rwszj3</bpmn:incoming>
-      </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_0rd1bwl" sourceRef="Event_0b3lsfm" targetRef="Activity_1gqa7l5" />
-      <bpmn:sequenceFlow id="Flow_0rwszj3" sourceRef="Activity_1gqa7l5" targetRef="Event_0qeq13x" />
-      <bpmn:serviceTask id="Activity_1gqa7l5" name="Process Application Cancellation" camunda:delegateExpression="${cancelApplicationServiceTask}">
-        <bpmn:extensionElements>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="cancelType">Cancelled</camunda:inputParameter>
-          </camunda:inputOutput>
-        </bpmn:extensionElements>
-        <bpmn:incoming>Flow_0rd1bwl</bpmn:incoming>
-        <bpmn:outgoing>Flow_0rwszj3</bpmn:outgoing>
-      </bpmn:serviceTask>
-      <bpmn:startEvent id="Event_0b3lsfm" name="Application Cancellation request recived" isInterrupting="false">
-        <bpmn:outgoing>Flow_0rd1bwl</bpmn:outgoing>
-        <bpmn:messageEventDefinition id="MessageEventDefinition_0u0zte3" messageRef="Message_06aga38" />
-      </bpmn:startEvent>
-    </bpmn:subProcess>
-    <bpmn:serviceTask id="Activity_CheckFormCompletness" name="Check for form completeness and format" camunda:delegateExpression="${checkForFormCompletenessServiceTask}">
-      <bpmn:extensionElements />
+    <bpmn:serviceTask id="Activity_CheckFormCompletness" name="Check for form completeness and format" implementation="##WebService">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="checkForFormCompletenessServiceTask" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_msgStartEvent_to_checkFormCompletness</bpmn:incoming>
       <bpmn:incoming>Flow_0oyeqjo</bpmn:incoming>
       <bpmn:outgoing>Flow_1kstsml</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1i8mani" name="Disbursement Instruction" camunda:delegateExpression="${disbursementInstructionServiceTask}">
-      <bpmn:extensionElements />
+    <bpmn:serviceTask id="Activity_1i8mani" name="Disbursement Instruction" implementation="##WebService">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="disbursementInstructionServiceTask" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1r6cn4k</bpmn:incoming>
       <bpmn:outgoing>Flow_0e7waix</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:intermediateCatchEvent id="Event_02g7gsp" name="Document Provided for re-assesment">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1ky04sl</bpmn:incoming>
       <bpmn:outgoing>Flow_14o1vde</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_18mtuuj" messageRef="Message_0m37m6l" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:userTask id="Activity_financialAssessment" name="Financial Assessment" camunda:assignee="FINANCIAL_ASSESSMENT_MANAGER">
+    <bpmn:userTask id="Activity_financialAssessment" name="Financial Assessment" implementation="##unspecified">
       <bpmn:extensionElements>
-        <camunda:taskListener delegateExpression="${createUserTask}" event="create" id="1" />
-        <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">FINANCIAL_ASSESSMENT_MANAGER</camunda:inputParameter>
-        </camunda:inputOutput>
+        <zeebe:ioMapping>
+          <zeebe:input source="FINANCIAL_ASSESSMENT_MANAGER" target="taskType" />
+        </zeebe:ioMapping>
+        <zeebe:assignmentDefinition assignee="FINANCIAL_ASSESSMENT_MANAGER" candidateGroups="" candidateUsers="" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1saa5ze</bpmn:incoming>
       <bpmn:incoming>Flow_14o1vde</bpmn:incoming>
@@ -145,20 +132,22 @@
     <bpmn:sequenceFlow id="Flow_1saa5ze" sourceRef="Activity_creditCheck" targetRef="Activity_financialAssessment" />
     <bpmn:sequenceFlow id="Flow_1wfzgt5" sourceRef="Gateway_02wk65b" targetRef="Event_1glqrtj" />
     <bpmn:sequenceFlow id="Flow_05bt797" name="High/Medium Risk" sourceRef="Gateway_0y4xwrr" targetRef="Activity_0ym4juq">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${highRisk}</bpmn:conditionExpression>
+      <bpmn:extensionElements />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=highRisk</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:startEvent id="START_EVENT_LOAN_REQUEST_RECEIVED" name="Loan Request Received">
       <bpmn:outgoing>Flow_msgStartEvent_to_checkFormCompletness</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_07yc8ef" name="Low Risk" sourceRef="Gateway_0y4xwrr" targetRef="Activity_1bj9jpi">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!highRisk}</bpmn:conditionExpression>
+      <bpmn:extensionElements />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=not(highRisk)</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="Activity_0ym4juq" name="Manager Approval" camunda:assignee="RISK_ASSESSMENT_MANAGER">
+    <bpmn:userTask id="Activity_0ym4juq" name="Manager Approval" implementation="##unspecified">
       <bpmn:extensionElements>
-        <camunda:taskListener delegateExpression="${createUserTask}" event="create" id="2" />
-        <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">RISK_ASSESSMENT_MANAGER</camunda:inputParameter>
-        </camunda:inputOutput>
+        <zeebe:ioMapping>
+          <zeebe:input source="RISK_ASSESSMENT_MANAGER" target="taskType" />
+        </zeebe:ioMapping>
+        <zeebe:assignmentDefinition assignee="RISK_ASSESSMENT_MANAGER" candidateGroups="" candidateUsers="" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_05bt797</bpmn:incoming>
       <bpmn:outgoing>Flow_163p03s</bpmn:outgoing>
@@ -170,18 +159,24 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_msgStartEvent_to_checkFormCompletness" name="Msg Start Event to Check form completness" sourceRef="START_EVENT_LOAN_REQUEST_RECEIVED" targetRef="Activity_CheckFormCompletness" />
     <bpmn:sequenceFlow id="Flow_0jbfdef" name="No" sourceRef="Gateway_1q2ugcz" targetRef="Activity_requestForMissingApplicationData">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!isApplicationComplete}</bpmn:conditionExpression>
+      <bpmn:extensionElements />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=not(isApplicationComplete)</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1tdztvm" name="No" sourceRef="Gateway_1213rk1" targetRef="Activity_09addmn">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!hasMissingData}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sendTask id="Activity_requestForMissingApplicationData" name="Notify Applicant to provide missing data" camunda:delegateExpression="${notifyToApplicantServiceTask}">
       <bpmn:extensionElements />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=not(hasMissingData)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sendTask id="Activity_requestForMissingApplicationData" name="Notify Applicant to provide missing data" implementation="##WebService">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="notifyToApplicantServiceTask" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0jbfdef</bpmn:incoming>
       <bpmn:outgoing>Flow_0394oaf</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sendTask id="Activity_1dunbtg" name="Notify Applicant to provide missing documents" camunda:delegateExpression="${notifyToApplicantServiceTask}">
-      <bpmn:extensionElements />
+    <bpmn:sendTask id="Activity_1dunbtg" name="Notify Applicant to provide missing documents" implementation="##WebService">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="notifyToApplicantServiceTask" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0a9f9es</bpmn:incoming>
       <bpmn:outgoing>Flow_1lb00v7</bpmn:outgoing>
     </bpmn:sendTask>
@@ -190,16 +185,19 @@
       <bpmn:outgoing>Flow_05bt797</bpmn:outgoing>
       <bpmn:outgoing>Flow_07yc8ef</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_09addmn" name="Risk Scoring" camunda:delegateExpression="${riskScoringServiceTask}">
-      <bpmn:extensionElements />
+    <bpmn:serviceTask id="Activity_09addmn" name="Risk Scoring" implementation="##WebService">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="riskScoringServiceTask" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1tdztvm</bpmn:incoming>
       <bpmn:outgoing>Flow_17afgne</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sendTask id="Activity_1bj9jpi" name="Trigger Document Signing" camunda:delegateExpression="${notifyForDocumentSigning}">
+    <bpmn:sendTask id="Activity_1bj9jpi" name="Trigger Document Signing" implementation="##WebService">
       <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="taskType">"docSigning"</camunda:inputParameter>
-        </camunda:inputOutput>
+        <zeebe:ioMapping>
+          <zeebe:input source="&#34;docSigning&#34;" target="taskType" />
+        </zeebe:ioMapping>
+        <zeebe:taskDefinition type="notifyForDocumentSigning" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_07yc8ef</bpmn:incoming>
       <bpmn:incoming>Flow_1ba2kzx</bpmn:incoming>
@@ -227,13 +225,17 @@
       <bpmn:outgoing>Flow_1wfzgt5</bpmn:outgoing>
     </bpmn:eventBasedGateway>
     <bpmn:sequenceFlow id="Flow_1xyi20u" name="Yes" sourceRef="Gateway_1q2ugcz" targetRef="Activity_creditCheck">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isApplicationComplete}</bpmn:conditionExpression>
+      <bpmn:extensionElements />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isApplicationComplete</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0a9f9es" name="Yes" sourceRef="Gateway_1213rk1" targetRef="Activity_1dunbtg">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasMissingData}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_creditCheck" name="Credit Check" camunda:delegateExpression="${creditCheckServiceTask}">
       <bpmn:extensionElements />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=hasMissingData</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_creditCheck" name="Credit Check" implementation="##WebService">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="creditCheckServiceTask" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1xyi20u</bpmn:incoming>
       <bpmn:outgoing>Flow_1saa5ze</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -248,22 +250,24 @@
       <bpmn:incoming>Flow_16rcq75</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_17adyj8" sourceRef="Event_0j7ajip" targetRef="Activity_0zd5kqs" />
-    <bpmn:serviceTask id="Activity_0zd5kqs" name="Auto-close" camunda:delegateExpression="${cancelApplicationServiceTask}">
+    <bpmn:serviceTask id="Activity_0zd5kqs" name="Auto-close" implementation="##WebService">
       <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="cancelType">Auto_Cancelled</camunda:inputParameter>
-        </camunda:inputOutput>
+        <zeebe:ioMapping>
+          <zeebe:input source="Auto_Cancelled" target="cancelType" />
+        </zeebe:ioMapping>
+        <zeebe:taskDefinition type="RejectOrAutoCloseApplicationServiceTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_17adyj8</bpmn:incoming>
       <bpmn:outgoing>Flow_16rcq75</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_16rcq75" sourceRef="Activity_0zd5kqs" targetRef="Event_0xbpp5h" />
     <bpmn:sequenceFlow id="Flow_0hpkc41" sourceRef="Event_1glqrtj" targetRef="Activity_0k0kpdx" />
-    <bpmn:serviceTask id="Activity_0k0kpdx" name="Auto-close" camunda:delegateExpression="${cancelApplicationServiceTask}">
+    <bpmn:serviceTask id="Activity_0k0kpdx" name="Auto-close" implementation="##WebService">
       <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="cancelType">Auto_Cancelled</camunda:inputParameter>
-        </camunda:inputOutput>
+        <zeebe:ioMapping>
+          <zeebe:input source="Auto_Cancelled" target="cancelType" />
+        </zeebe:ioMapping>
+        <zeebe:taskDefinition type="RejectOrAutoCloseApplicationServiceTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0hpkc41</bpmn:incoming>
       <bpmn:outgoing>Flow_0euxgtp</bpmn:outgoing>
@@ -273,13 +277,15 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0euxgtp" sourceRef="Activity_0k0kpdx" targetRef="Event_0rsp40j" />
     <bpmn:sequenceFlow id="Flow_0ovam42" name="Rejected" sourceRef="Gateway_1u8e1dx" targetRef="Activity_0dnkkez">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == "REJECT"}</bpmn:conditionExpression>
+      <bpmn:extensionElements />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=decision = "REJECT"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0dnkkez" name="Reject Application" camunda:delegateExpression="${cancelApplicationServiceTask}">
+    <bpmn:serviceTask id="Activity_0dnkkez" name="Reject Application" implementation="##WebService">
       <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="cancelType">Rejected</camunda:inputParameter>
-        </camunda:inputOutput>
+        <zeebe:ioMapping>
+          <zeebe:input source="Rejected" target="cancelType" />
+        </zeebe:ioMapping>
+        <zeebe:taskDefinition type="RejectOrAutoCloseApplicationServiceTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ovam42</bpmn:incoming>
       <bpmn:outgoing>Flow_0xzoakm</bpmn:outgoing>
@@ -293,33 +299,66 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_07ra654" sourceRef="Gateway_0fss3z9" targetRef="Event_1ps3e0a" />
     <bpmn:sequenceFlow id="Flow_0cwws4o" sourceRef="Event_1ps3e0a" targetRef="Activity_0i1x65j" />
-    <bpmn:serviceTask id="Activity_0i1x65j" name="Auto-close" camunda:delegateExpression="${cancelApplicationServiceTask}">
+    <bpmn:serviceTask id="Activity_0i1x65j" name="Auto-close" implementation="##WebService">
       <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="cancelType">Auto_Cancelled</camunda:inputParameter>
-        </camunda:inputOutput>
+        <zeebe:ioMapping>
+          <zeebe:input source="Auto_Cancelled" target="cancelType" />
+        </zeebe:ioMapping>
+        <zeebe:taskDefinition type="RejectOrAutoCloseApplicationServiceTask" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0cwws4o</bpmn:incoming>
       <bpmn:outgoing>Flow_04jy18y</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_04jy18y" sourceRef="Activity_0i1x65j" targetRef="Event_067w7nc" />
     <bpmn:intermediateCatchEvent id="Event_1hnqcys" name="Document Signing Received">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_0o10cr9</bpmn:incoming>
       <bpmn:outgoing>Flow_1r6cn4k</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1q9xqq1" messageRef="Message_1m1gqhi" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1q9xqq1" messageRef="Message_00nvove" />
     </bpmn:intermediateCatchEvent>
+    <bpmn:subProcess id="Activity_18tnpxp" name="Cancel Application" triggeredByEvent="true">
+      <bpmn:startEvent id="Event_1m54v7e">
+        <bpmn:outgoing>Flow_0zgu0eo</bpmn:outgoing>
+        <bpmn:messageEventDefinition id="MessageEventDefinition_1nqgbol" messageRef="Message_06aga38" />
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0zgu0eo" sourceRef="Event_1m54v7e" targetRef="Activity_0hsnvn5" />
+      <bpmn:serviceTask id="Activity_0hsnvn5" name="Process Application Cancellation">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="cancelApplicationServiceTask" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0zgu0eo</bpmn:incoming>
+        <bpmn:outgoing>Flow_1p1w2ao</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:endEvent id="Event_03v8aby">
+        <bpmn:incoming>Flow_1p1w2ao</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1p1w2ao" sourceRef="Activity_0hsnvn5" targetRef="Event_03v8aby" />
+    </bpmn:subProcess>
   </bpmn:process>
   <bpmn:message id="Message_2l417h0" name="MSGEVNT_MISSING_APP_DATA_RECIEVED_AKNWLG">
-    <bpmn:extensionElements />
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=missingAppDataReceivedAcknowledgement" />
+    </bpmn:extensionElements>
   </bpmn:message>
   <bpmn:message id="Message_0m37m6l" name="MSGEVNT_AKNOWLEDGE_MISSING_DOC_PROVIDED">
-    <bpmn:extensionElements />
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=missingDocProvidedAcknowledgement" />
+    </bpmn:extensionElements>
   </bpmn:message>
   <bpmn:message id="Message_1m1gqhi" name="MSGEVNT_SIGNED_DOC_RECIEVED">
-    <bpmn:extensionElements />
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=documentSigningAcknowledgement" />
+    </bpmn:extensionElements>
   </bpmn:message>
   <bpmn:message id="Message_06aga38" name="EVNTSTARTMSGEVENT_CANCELLATION">
-    <bpmn:extensionElements />
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=EVNTSTARTMSGEVENT_CANCELLATION" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_00nvove" name="MSGEVNT_SIGNED_DOC_RECEIVED">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=documentSigningAcknowledgement" />
+    </bpmn:extensionElements>
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="LOAN_APPROVAL_PROCESS_COLL">
@@ -365,34 +404,6 @@
           <dc:Bounds x="1558" y="328" width="51" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_12pkyh1_di" bpmnElement="Activity_18tnpxp" isExpanded="true">
-        <dc:Bounds x="480" y="990" width="350" height="200" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0qeq13x_di" bpmnElement="Event_0qeq13x">
-        <dc:Bounds x="772" y="1072" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="768" y="1115" width="53" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02wpcu5_di" bpmnElement="Activity_1gqa7l5">
-        <dc:Bounds x="610" y="1050" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0gfflwh_di" bpmnElement="Event_0b3lsfm">
-        <dc:Bounds x="520" y="1072" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="504" y="1115" width="76" height="40" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0rd1bwl_di" bpmnElement="Flow_0rd1bwl">
-        <di:waypoint x="556" y="1090" />
-        <di:waypoint x="610" y="1090" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0rwszj3_di" bpmnElement="Flow_0rwszj3">
-        <di:waypoint x="710" y="1090" />
-        <di:waypoint x="772" y="1090" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_1i8w98o_di" bpmnElement="Activity_CheckFormCompletness">
         <dc:Bounds x="335" y="507" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -527,6 +538,28 @@
           <dc:Bounds x="1982" y="567" width="86" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_098j1tj" bpmnElement="Activity_18tnpxp" isExpanded="true">
+        <dc:Bounds x="680" y="1000" width="350" height="200" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0mfmucw_di" bpmnElement="Event_1m54v7e">
+        <dc:Bounds x="712" y="1062" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0uucqdq_di" bpmnElement="Activity_0hsnvn5">
+        <dc:Bounds x="800" y="1040" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_03v8aby_di" bpmnElement="Event_03v8aby">
+        <dc:Bounds x="952" y="1062" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0zgu0eo_di" bpmnElement="Flow_0zgu0eo">
+        <di:waypoint x="748" y="1080" />
+        <di:waypoint x="800" y="1080" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p1w2ao_di" bpmnElement="Flow_1p1w2ao">
+        <di:waypoint x="900" y="1080" />
+        <di:waypoint x="952" y="1080" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ba2kzx_di" bpmnElement="Flow_1ba2kzx" bioc:stroke="#205022">
         <di:waypoint x="1584" y="415" />
         <di:waypoint x="1584" y="470" />
@@ -623,7 +656,7 @@
         <di:waypoint x="252" y="547" />
         <di:waypoint x="335" y="547" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="258" y="529" width="80" height="40" />
+          <dc:Bounds x="258" y="480" width="80" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0jbfdef_di" bpmnElement="Flow_0jbfdef" bioc:stroke="#831311">
