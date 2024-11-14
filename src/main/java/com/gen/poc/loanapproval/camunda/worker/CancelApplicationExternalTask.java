@@ -1,4 +1,4 @@
-package com.gen.poc.loanapproval.camunda.external_task;
+package com.gen.poc.loanapproval.camunda.worker;
 
 import com.gen.poc.loanapproval.enums.LoanApplicationStatus;
 import com.gen.poc.loanapproval.enums.TaskStatus;
@@ -7,13 +7,11 @@ import com.gen.poc.loanapproval.repository.LoanApplicationRepository;
 import com.gen.poc.loanapproval.repository.LoanApprovalTaskRepository;
 import com.gen.poc.loanapproval.repository.entity.LoanApplication;
 import com.gen.poc.loanapproval.repository.entity.LoanApprovalTask;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
-import org.camunda.bpm.client.task.ExternalTask;
-import org.camunda.bpm.client.task.ExternalTaskHandler;
-import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -23,20 +21,24 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ExternalTaskSubscription("cancelApplicationServiceTask")
-public class CancelApplicationExternalTask implements ExternalTaskHandler {
+public class CancelApplicationExternalTask {
 
     private final LoanApplicationRepository loanApplicationRepository;
 
     private final LoanApprovalTaskRepository loanApprovalTaskRepository;
 
     /**
-     * @param externalTask
-     * @param externalTaskService
+     * @param job
      */
-    @Override
-    public void execute(ExternalTask externalTask, ExternalTaskService externalTaskService) {
-        String cancelType = externalTask.getVariable("cancelType");
+    @JobWorker(type = "cancelApplicationServiceTask")
+    public void execute(final ActivatedJob job) {
+        long loanApplicationId =Long.valueOf((Integer) job.getVariable("loan-id"));
+        cancelLoanApplication(loanApplicationId, LoanApplicationStatus.CANCELLED);
+    }
+
+    @JobWorker(type = "RejectOrAutoCloseApplicationServiceTask")
+    public void RejectOrAutoCloseApplication(final ActivatedJob job) {
+        String cancelType = (String) job.getVariable("cancelType");
         log.info("cancelType: {}", cancelType);
         LoanApplicationStatus loanApplicationStatus = null;
         if (StringUtils.equals(cancelType, "Auto_Cancelled")) {
@@ -48,9 +50,8 @@ public class CancelApplicationExternalTask implements ExternalTaskHandler {
         if (StringUtils.equals(cancelType, "Rejected")) {
             loanApplicationStatus = LoanApplicationStatus.REJECTED;
         }
-        Long loanApplicationId = (Long) externalTask.getVariable("loan-id");
+        long loanApplicationId =Long.valueOf((Integer) job.getVariable("loan-id"));
         cancelLoanApplication(loanApplicationId, loanApplicationStatus);
-        externalTaskService.complete(externalTask);
     }
 
     private void cancelLoanApplication(long loanApplicationId, LoanApplicationStatus status) {

@@ -1,4 +1,4 @@
-package com.gen.poc.loanapproval.camunda.listeners;
+package com.gen.poc.loanapproval.camunda.worker;
 
 import com.gen.poc.loanapproval.enums.ApprovalCategory;
 import com.gen.poc.loanapproval.enums.LoanApplicationStatus;
@@ -7,40 +7,36 @@ import com.gen.poc.loanapproval.repository.LoanApplicationRepository;
 import com.gen.poc.loanapproval.repository.LoanApprovalTaskRepository;
 import com.gen.poc.loanapproval.repository.entity.LoanApplication;
 import com.gen.poc.loanapproval.repository.entity.LoanApprovalTask;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component("createUserTask")
+@Component
 @Slf4j
 @RequiredArgsConstructor
-public class CreateUserTask implements BaseListener {
-
+public class UserTaskZeebeWorker {
 
     private final LoanApplicationRepository loanApplicationRepository;
 
     private final LoanApprovalTaskRepository loanApprovalTaskRepository;
 
-    @Override
-    public void notify(DelegateTask delegateTask) {
-
-        Long loanApplicationId = (Long) delegateTask.getVariable("loan-id");
-        String taskType = delegateTask.getVariable("taskType").toString();
-        log.info("TaskType: {}", taskType);
+    @JobWorker(type = "io.camunda.zeebe:userTask", autoComplete = false)
+    public void handleJob(final JobClient client, final ActivatedJob job) {
+        Long loanApplicationId = Long.valueOf((Integer) job.getVariablesAsMap().get("loan-id"));
+        String taskType = job.getVariablesAsMap().get("taskType").toString();
         LoanApplicationStatus status;
         String taskId;
         ApprovalCategory approvalCategory;
-        if (StringUtils.equalsIgnoreCase("FINANCIAL_ASSESSMENT_MANAGER", taskType)) {
-            log.info("Creating FM task");
+        if(ApprovalCategory.FINANCIAL_ASSESSMENT_MANAGER.name().equalsIgnoreCase(taskType)){
             approvalCategory = ApprovalCategory.FINANCIAL_ASSESSMENT_MANAGER;
             taskId = "FM-".concat(loanApplicationId.toString());
             status = LoanApplicationStatus.PENDING_FINANCIAL_ASSESSMENT_MANAGER_APPROVAL;
         } else {
-            log.info("Creating RM task");
             approvalCategory = ApprovalCategory.RISK_ASSESSMENT_MANAGER;
             taskId = "RM-".concat(loanApplicationId.toString());
             status = LoanApplicationStatus.PENDING_RISK_ASSESSMENT_MANAGER_APPROVAL;
@@ -48,18 +44,18 @@ public class CreateUserTask implements BaseListener {
         LoanApprovalTask task = new LoanApprovalTask();
         task.setTaskId(taskId);
         task.setTaskCategory(approvalCategory);
-        task.setTaskInstanceId(String.valueOf(delegateTask.getId()));
+        task.setTaskInstanceId(String.valueOf(job.getKey()));
         task.setStatus(TaskStatus.IN_PROGRESS);
         task.setLoanApplicationId(loanApplicationId);
         loanApprovalTaskRepository.save(task);
         Optional<LoanApplication> loanApplication = loanApplicationRepository.findById(loanApplicationId);
         loanApplication.get().setStatus(status);
-        log.info("Loan Approval task: {}", task);
         loanApplicationRepository.save(loanApplication.get());
-        log.info("Loan Application: {}", loanApplication);
         // Element Id
+        log.info("user task task element id {}", job.getKey());
+        log.info("task element id {}", job);
 
-        log.info("task element id {}", delegateTask.getId());
+        // get variables
 
     }
 }
